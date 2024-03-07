@@ -149,6 +149,10 @@ const Video = () => {
   };
 
   const handleSub = async () => {
+    if (!currentUser || !currentUser.subscribedUsers) {
+      return; // Exit early if currentUser or subscribedUsers is null
+    }
+
     currentUser.subscribedUsers.includes(channel._id)
       ? await axios.put(`/users/unsub/${channel._id}`)
       : await axios.put(`/users/sub/${channel._id}`);
@@ -211,25 +215,35 @@ const Video = () => {
         <Hr />
         <Channel>
           <ChannelInfo>
-            <Image src={channel.img} />
+            {channel && channel.img ? <Image src={channel.img} /> : null}
             <ChannelDetail>
-              <ChannelName>{channel.name}</ChannelName>
-              <ChannelCounter>{channel.subscribers} subscribers</ChannelCounter>
+              {channel && channel.name ? (
+                <ChannelName>{channel.name}</ChannelName>
+              ) : null}
+              {channel && channel.subscribers ? (
+                <ChannelCounter>
+                  {channel.subscribers} subscribers
+                </ChannelCounter>
+              ) : null}
               <Description>{currentVideo && currentVideo.desc}</Description>
             </ChannelDetail>
           </ChannelInfo>
-          {channel ? (
+          {channel && channel._id ? (
             <Subscribe onClick={handleSub}>
-              {currentUser.subscribedUsers?.includes(channel._id)
+              {currentUser?.subscribedUsers?.includes(channel._id)
                 ? "SUBSCRIBED"
                 : "SUBSCRIBE"}
             </Subscribe>
           ) : null}
         </Channel>
         <Hr />
-        {currentVideo ? <Comments videoId={currentVideo._id} /> : null}
+        {currentVideo && currentVideo._id ? (
+          <Comments videoId={currentVideo._id} />
+        ) : null}
       </Content>
-      {currentVideo ? <Recommendation tags={currentVideo.tags} /> : null}
+      {currentVideo && currentVideo.tags ? (
+        <Recommendation tags={currentVideo.tags} />
+      ) : null}
     </Container>
   );
 };
