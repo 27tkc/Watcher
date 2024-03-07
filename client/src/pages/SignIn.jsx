@@ -1,11 +1,13 @@
+// Updated
 import axios from "axios";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { loginStart, loginSuccess, loginFailure } from "../redux/userSlice";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
-
+import { async } from "@firebase/util";
+import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -69,10 +71,11 @@ const Link = styled.span`
 `;
 
 const SignIn = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -80,12 +83,14 @@ const SignIn = () => {
     try {
       const res = await axios.post("/auth/signin", { name, password });
       dispatch(loginSuccess(res.data));
+      navigate("/");
     } catch (err) {
       dispatch(loginFailure());
     }
   };
+
   const signInWithGoogle = async () => {
-    dispatch(loginStart);
+    dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
         axios
@@ -95,18 +100,23 @@ const SignIn = () => {
             img: result.user.photoURL,
           })
           .then((res) => {
+            console.log(res);
             dispatch(loginSuccess(res.data));
+            navigate("/");
           });
       })
       .catch((error) => {
         dispatch(loginFailure());
       });
   };
+
+  //TODO: REGISTER FUNCTIONALITY
+
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <SubTitle>to continue to Watcher</SubTitle>
+        <SubTitle>to continue to LamaTube</SubTitle>
         <Input
           placeholder="username"
           onChange={(e) => setName(e.target.value)}

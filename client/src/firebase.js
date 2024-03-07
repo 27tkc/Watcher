@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
-const firebaseConfig = {
+const firebaseConfiguration = {
   apiKey: "AIzaSyDDJw4BXKGcrx3Jn3MaooUvdY_r_t8Xf30",
   authDomain: "watcher-8c89a.firebaseapp.com",
   projectId: "watcher-8c89a",
@@ -12,7 +12,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfiguration);
 export const auth = getAuth();
 export const provider = new GoogleAuthProvider();
 
