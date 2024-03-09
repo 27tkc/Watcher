@@ -166,7 +166,7 @@ const Video = () => {
       <Content>
         <VideoWrapper>
           {currentVideo && currentVideo.videoUrl && (
-            <VideoFrame src={currentVideo.videoUrl} controls />
+            <VideoFrame src={currentVideo.videoUrl} controls autoplay />
           )}
         </VideoWrapper>
 

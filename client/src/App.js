@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
+  height: 100vh;
 `;
 
 const Main = styled.div`
@@ -44,6 +45,7 @@ function App() {
                     path="signin"
                     element={currentUser ? <Home /> : <SignIn />}
                   />
+                  <Route path="signout" element={<SignIn />} />
                   <Route path="video">
                     <Route path=":id" element={<Video />} />
                   </Route>

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Watcher from "../img/logo-white.png";
+import WatcherLight from "../img/logo-white.png";
+import WatcherDark from "../img/logo-black.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
@@ -13,24 +14,29 @@ import MovieOutlinedIcon from "@mui/icons-material/MovieOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
+
 const Container = styled.div`
   flex: 1;
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 100vh;
+  height: 100% !important;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
   top: 0;
 `;
+
 const Wrapper = styled.div`
   padding: 18px 26px;
 `;
+
 const Logo = styled.div`
   display: flex;
   align-items: center;
@@ -40,7 +46,7 @@ const Logo = styled.div`
 `;
 
 const Img = styled.img`
-  height: 25px;
+  height: 40px;
 `;
 
 const Item = styled.div`
@@ -61,6 +67,8 @@ const Hr = styled.hr`
 `;
 
 const Login = styled.div``;
+const Logout = styled.div``;
+
 const Button = styled.button`
   padding: 5px 15px;
   background-color: transparent;
@@ -84,19 +92,28 @@ const Title = styled.h2`
 
 const Menu = ({ darkMode, setDarkMode }) => {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const logoSrc = darkMode ? WatcherLight : WatcherDark;
+
+  // Function to handle signout
+  const handleSignout = () => {
+    dispatch(logout()); // Dispatching the logout action
+  };
 
   return (
     <Container>
       <Wrapper>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Logo>
-            <Img src={Watcher} />
+            <Img src={logoSrc} />
           </Logo>
         </Link>
-        <Item>
-          <HomeIcon />
-          Home
-        </Item>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Item>
+            <HomeIcon />
+            Home
+          </Item>
+        </Link>
         <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <ExploreOutlinedIcon />
@@ -122,20 +139,6 @@ const Menu = ({ darkMode, setDarkMode }) => {
           History
         </Item>
         <Hr />
-        {!currentUser && (
-          <>
-            <Login>
-              Sign in to like videos, comment, and subscribe.
-              <Link to="signin" style={{ textDecoration: "none" }}>
-                <Button>
-                  <AccountCircleOutlinedIcon />
-                  SIGN IN
-                </Button>
-              </Link>
-            </Login>
-            <Hr />
-          </>
-        )}
         <Title>BEST OF Watcher</Title>
         <Item>
           <LibraryMusicOutlinedIcon />
@@ -178,6 +181,37 @@ const Menu = ({ darkMode, setDarkMode }) => {
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
+        <Hr />
+        {!currentUser && (
+          <>
+            <Login>
+              Sign in to like videos, comment, and subscribe.
+              <Link to="signin" style={{ textDecoration: "none" }}>
+                <Button>
+                  <AccountCircleOutlinedIcon />
+                  SIGN IN
+                </Button>
+              </Link>
+            </Login>
+            <Hr />
+          </>
+        )}
+        {currentUser && (
+          <>
+            <Logout>
+              <Link to="signout" style={{ textDecoration: "none" }}>
+                <Button
+                  style={{ color: "red", borderColor: "red" }}
+                  onClick={handleSignout}
+                >
+                  <LogoutOutlinedIcon style={{ color: "red" }} />
+                  SIGN OUT
+                </Button>
+              </Link>
+            </Logout>
+            <Hr />
+          </>
+        )}
       </Wrapper>
     </Container>
   );

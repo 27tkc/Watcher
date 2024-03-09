@@ -136,6 +136,7 @@ const Upload = ({ setOpen }) => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
+    console.log(inputs);
     const res = await axios.post("/videos", { ...inputs, tags });
     setOpen(false);
     res.status === 200 && navigate(`/video/${res.data._id}`);
@@ -164,14 +165,14 @@ const Upload = ({ setOpen }) => {
         />
         <Desc
           placeholder="Description"
-          name="desc"
+          name="description"
           rows={8}
           onChange={handleChange}
         />
         <Input
           type="text"
           placeholder="Separate the tags with commas."
-          onChance={handleTags}
+          onChange={handleTags}
         />
         <Label>Image:</Label>
         {imgPerc > 0 ? (
