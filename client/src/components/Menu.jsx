@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import WatcherLight from "../img/logo-white.png";
 import WatcherDark from "../img/logo-black.png";
@@ -91,15 +91,31 @@ const Title = styled.h2`
   margin-bottom: 20px;
 `;
 
-const Menu = ({ darkMode, setDarkMode }) => {
+const Menu = ({ darkMode, setDarkMode, categories }) => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const logoSrc = darkMode ? WatcherLight : WatcherDark;
-
   // Function to handle signout
   const handleSignout = () => {
     dispatch(logout()); // Dispatching the logout action
   };
+
+  // useEffect(() => {
+  //   // Fetch latest videos when categories change
+  //   // fetchLatestVideos();
+  // }, [categories]);
+
+  // Mapping of categories to icons
+  const categoryIcons = {
+    Music: LibraryMusicOutlinedIcon,
+    Sports: SportsBasketballOutlinedIcon,
+    Gaming: SportsEsportsOutlinedIcon,
+    Movies: MovieOutlinedIcon,
+    News: ArticleOutlinedIcon,
+  };
+
+  const firstCatego = categories.length > 0 ? categories[0] : "Music";
+  const FirstCategoryIcon = firstCatego === "Music"? categoryIcons[firstCatego] : categoryIcons[firstCatego];
 
   return (
     <Container>
@@ -147,7 +163,29 @@ const Menu = ({ darkMode, setDarkMode }) => {
         </Item>
         <Hr />
         <Title>BEST OF Watcher</Title>
+        <Link to={firstCatego} style={{ textDecoration: "none", color: "inherit" }}>
         <Item>
+          {FirstCategoryIcon && <FirstCategoryIcon />}
+          {firstCatego}
+        </Item>
+        </Link>
+        {/* Render rest of the categories */}
+        {Object.keys(categoryIcons).map((category, index) => {
+          if (category === firstCatego) {
+            return null;
+          }
+          const IconComponent = categoryIcons[category]; // Get the icon component
+          return (
+            <Link to={category} style={{ textDecoration: "none", color: "inherit" }}>            
+              <Item key={index}>
+                {IconComponent && <IconComponent />} {/* Instantiate and render the icon component */}
+                {category}
+              </Item>
+            </Link>
+          );
+        })}
+
+        {/* <Item>
           <LibraryMusicOutlinedIcon />
           Music
         </Item>
@@ -170,7 +208,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
         <Item>
           <LiveTvOutlinedIcon />
           Live
-        </Item>
+        </Item> */}
         <Hr />
         <Item>
           <SettingsOutlinedIcon />

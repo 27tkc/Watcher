@@ -7,10 +7,14 @@ import {
   unsubscribe,
   like,
   dislike,
+  getAllUsers,
 } from "../controllers/user.js";
 import { verifyToken } from "../verifyToken.js";
 
 const router = express.Router();
+
+//get all users
+router.get("/find/getAllUsers", getAllUsers);
 
 //update user
 router.put("/:id", verifyToken, update);
