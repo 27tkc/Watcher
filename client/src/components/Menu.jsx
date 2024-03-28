@@ -5,7 +5,7 @@ import WatcherDark from "../img/logo-black.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
-import InfoIcon from "@mui/icons-material/Info";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import VideoLibraryOutlinedIcon from "@mui/icons-material/VideoLibraryOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
@@ -129,12 +129,12 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
             <Img src={logoSrc} />
           </Logo>
         </Link>
-        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+        {/* <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <HomeIcon />
             Home
           </Item>
-        </Link>
+        </Link> */}
         <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <ExploreOutlinedIcon />
@@ -225,7 +225,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
         </Item>
         <Link to="about" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
-            <InfoIcon />
+            <InfoOutlinedIcon />
             About
           </Item>
         </Link>
