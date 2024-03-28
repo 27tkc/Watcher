@@ -5,6 +5,7 @@ import WatcherDark from "../img/logo-black.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
+import InfoIcon from "@mui/icons-material/Info";
 import VideoLibraryOutlinedIcon from "@mui/icons-material/VideoLibraryOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
@@ -140,32 +141,25 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
             Explore
           </Item>
         </Link>
-        <Link
-          to="subscriptions"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Item>
-            <Home />
-            Subscriptions
-          </Item>
-        </Link>
-        <Link to="about" style={{ textDecoration: "none", color: "inherit" }}>
-          <Item>
-            <SubscriptionsOutlinedIcon />
-            About
-          </Item>
-        </Link>
         <Hr />
         <Item>
           <VideoLibraryOutlinedIcon />
-          Library
+          Saved
         </Item>
         <Item>
           <HistoryOutlinedIcon />
           History
         </Item>
+        <Link
+          to="subscriptions"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <SubscriptionsOutlinedIcon />
+            Subscriptions
+          </Item>
+        </Link>
         <Hr />
-        <Title>BEST OF Watcher</Title>
         <Link
           to={firstCatego}
           style={{ textDecoration: "none", color: "inherit" }}
@@ -225,18 +219,16 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           <SettingsOutlinedIcon />
           Settings
         </Item>
-        <Item>
-          <FlagOutlinedIcon />
-          Report
-        </Item>
-        <Item>
-          <HelpOutlineOutlinedIcon />
-          Help
-        </Item>
         <Item onClick={() => setDarkMode(!darkMode)}>
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
+        <Link to="about" style={{ textDecoration: "none", color: "inherit" }}>
+          <Item>
+            <InfoIcon />
+            About
+          </Item>
+        </Link>
         <Hr />
         {!currentUser && (
           <>
@@ -265,7 +257,6 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
                 </Button>
               </Link>
             </Logout>
-            <Hr />
           </>
         )}
       </Wrapper>
