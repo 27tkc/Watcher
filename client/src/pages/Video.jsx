@@ -128,7 +128,10 @@ const Video = () => {
     const fetchData = async () => {
       try {
         const videoRes = await axios.get(`/videos/find/${path}`);
-        const channelRes = await axios.get(`/users/find/${videoRes.data.userId}`);
+        const channelRes = await axios.get(
+          `/users/find/${videoRes.data.userId}`
+        );
+        await axios.put(`/videos/view/${currentVideo._id}`);
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
       } catch (err) {}
@@ -167,7 +170,7 @@ const Video = () => {
 
   //Check if but is subscribed
   const isSubscribed = currentUser?.subscribedUsers?.includes(channel._id);
-  
+
   //TODO: DELETE VIDEO FUNCTIONALITY
 
   return (
@@ -175,7 +178,8 @@ const Video = () => {
       <Content>
         <VideoWrapper>
           {currentVideo && currentVideo.videoUrl && (
-            <VideoFrame src={currentVideo.videoUrl} 
+            <VideoFrame
+              src={currentVideo.videoUrl}
               controls
               autoPlay={true}
               muted
@@ -187,7 +191,9 @@ const Video = () => {
         <Title>{currentVideo && currentVideo.title}</Title>
         <Details>
           <Info>
-            {currentVideo && currentVideo.views && `${currentVideo.views} views`}
+            {currentVideo &&
+              currentVideo.views &&
+              `${currentVideo.views} views`}
             {currentVideo &&
               currentVideo.createdAt &&
               ` • ${format(currentVideo.createdAt)}`}
@@ -241,7 +247,10 @@ const Video = () => {
             </ChannelDetail>
           </ChannelInfo>
           {channel && channel._id ? (
-            <Subscribe onClick={handleSub} style={{ backgroundColor: isSubscribed ? 'green' : 'red' }}>
+            <Subscribe
+              onClick={handleSub}
+              style={{ backgroundColor: isSubscribed ? "green" : "red" }}
+            >
               {currentUser?.subscribedUsers?.includes(channel._id)
                 ? "SUBSCRIBED"
                 : "SUBSCRIBE"}
