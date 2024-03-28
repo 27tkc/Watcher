@@ -107,7 +107,6 @@ const Upload = ({ setOpen }) => {
     { value: "Gaming", label: "Gaming" },
     { value: "Music", label: "Music" },
     { value: "News", label: "News" },
-    { value: "Live", label: "Live" },
     // Add more categories as needed
   ];
 

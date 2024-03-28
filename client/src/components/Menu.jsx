@@ -99,10 +99,10 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
     dispatch(logout()); // Dispatching the logout action
   };
 
-  useEffect(() => {
-    // Fetch latest videos when categories change
-    // fetchLatestVideos();
-  }, [categories]);
+  // useEffect(() => {
+  //   // Fetch latest videos when categories change
+  //   // fetchLatestVideos();
+  // }, [categories]);
 
   // Mapping of categories to icons
   const categoryIcons = {
@@ -111,11 +111,10 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
     Gaming: SportsEsportsOutlinedIcon,
     Movies: MovieOutlinedIcon,
     News: ArticleOutlinedIcon,
-    Live: LiveTvOutlinedIcon,
   };
 
-  const firstCatego = categories.length > 0 ? categories[0] : null;
-  const FirstCategoryIcon = categoryIcons[firstCatego];
+  const firstCatego = categories.length > 0 ? categories[0] : "Music";
+  const FirstCategoryIcon = firstCatego === "Music"? categoryIcons[firstCatego] : categoryIcons[firstCatego];
 
   return (
     <Container>
@@ -157,10 +156,12 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
         </Item>
         <Hr />
         <Title>BEST OF Watcher</Title>
+        <Link to={firstCatego} style={{ textDecoration: "none", color: "inherit" }}>
         <Item>
           {FirstCategoryIcon && <FirstCategoryIcon />}
           {firstCatego}
         </Item>
+        </Link>
         {/* Render rest of the categories */}
         {Object.keys(categoryIcons).map((category, index) => {
           if (category === firstCatego) {
@@ -168,10 +169,12 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           }
           const IconComponent = categoryIcons[category]; // Get the icon component
           return (
-            <Item key={index}>
-              {IconComponent && <IconComponent />} {/* Instantiate and render the icon component */}
-              {category}
-            </Item>
+            <Link to={category} style={{ textDecoration: "none", color: "inherit" }}>            
+              <Item key={index}>
+                {IconComponent && <IconComponent />} {/* Instantiate and render the icon component */}
+                {category}
+              </Item>
+            </Link>
           );
         })}
 

@@ -60,6 +60,11 @@ function App() {
                 <Route path="trends" element={<Home type="trend" />} />
                 <Route path="subscriptions" element={<Home type="sub" />} />
                 <Route path="search" element={<Search />} />
+                <Route path="Movies" element={<Home type="Movies"/>} />
+                <Route path="Music" element={<Home type="Music"/>} />
+                <Route path="Sports" element={<Home type="Sports"/>} />
+                <Route path="Gaming" element={<Home type="Gaming"/>} />
+                <Route path="News" element={<Home type="News"/>} />
                 <Route
                   path="signin"
                   element={currentUser ? <Home /> : <SignIn />}

@@ -11,6 +11,7 @@ import {
   trend,
   getAllVideos,
   getAllVideosUser,
+  getAllVideoByCategory,
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
 
@@ -29,6 +30,7 @@ router.get("/random", random);
 router.get("/sub", verifyToken, sub);
 router.get("/tags", getByTag);
 router.get("/search", search);
-router.get("/latestVideo", latestVideo)
+router.get("/latestVideo", latestVideo);
+router.get("/:category", getAllVideoByCategory);
 
 export default router;
