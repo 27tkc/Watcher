@@ -160,10 +160,6 @@ const Menu = ({ darkMode, setDarkMode }) => {
           <ArticleOutlinedIcon />
           News
         </Item>
-        <Item>
-          <LiveTvOutlinedIcon />
-          Live
-        </Item>
         <Hr />
         <Item>
           <SettingsOutlinedIcon />
