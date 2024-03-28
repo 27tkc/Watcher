@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import Comments from "../components/Comments";
 import Card from "../components/Card";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,8 @@ import { dislike, fetchSuccess, like } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
 import Recommendation from "../components/Recommendation";
-import Modal from "../components/Modal"; // Import the Modal component
+import Modal from "../components/Modal";
+
 const Container = styled.div`
   display: flex;
   gap: 24px;
@@ -24,6 +25,7 @@ const Container = styled.div`
 const Content = styled.div`
   flex: 5;
 `;
+
 const VideoWrapper = styled.div``;
 
 const Title = styled.h1`
@@ -122,7 +124,7 @@ const Video = () => {
   const dispatch = useDispatch();
   const path = useLocation().pathname.split("/")[2];
   const [channel, setChannel] = useState({});
-  const [showModal, setShowModal] = useState(false); // State for showing/hiding modal
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -131,25 +133,28 @@ const Video = () => {
         const channelRes = await axios.get(
           `/users/find/${videoRes.data.userId}`
         );
-        await axios.put(`/videos/view/${currentVideo._id}`);
+        await axios.put(`/videos/view/${path}`);
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
-      } catch (err) {}
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
     };
     fetchData();
   }, [path, dispatch]);
 
   const handleLike = async () => {
     if (!currentUser) {
-      setShowModal(true); // Show modal if user is not signed in
+      setShowModal(true);
       return;
     }
     await axios.put(`/users/like/${currentVideo._id}`);
     dispatch(like(currentUser._id));
   };
+
   const handleDislike = async () => {
     if (!currentUser) {
-      setShowModal(true); // Show modal if user is not signed in
+      setShowModal(true);
       return;
     }
     await axios.put(`/users/dislike/${currentVideo._id}`);
@@ -158,8 +163,8 @@ const Video = () => {
 
   const handleSub = async () => {
     if (!currentUser || !currentUser.subscribedUsers) {
-      setShowModal(true); // Show modal if user is not signed in
-      return; // Exit early if currentUser or subscribedUsers is null
+      setShowModal(true);
+      return;
     }
 
     currentUser.subscribedUsers.includes(channel._id)
@@ -168,10 +173,7 @@ const Video = () => {
     dispatch(subscription(channel._id));
   };
 
-  //Check if but is subscribed
   const isSubscribed = currentUser?.subscribedUsers?.includes(channel._id);
-
-  //TODO: DELETE VIDEO FUNCTIONALITY
 
   return (
     <Container>
@@ -181,14 +183,13 @@ const Video = () => {
             <VideoFrame
               src={currentVideo.videoUrl}
               controls
-              autoPlay={true}
+              autoPlay={false}
               style={{ borderRadius: "1rem" }}
               muted
               onClick={(e) => e.currentTarget.play()}
             />
           )}
         </VideoWrapper>
-
         <Title>{currentVideo && currentVideo.title}</Title>
         <Details>
           <Info>
@@ -199,7 +200,6 @@ const Video = () => {
               currentVideo.createdAt &&
               ` • ${format(currentVideo.createdAt)}`}
           </Info>
-
           <Buttons>
             <Button onClick={handleLike}>
               {currentVideo &&
@@ -211,7 +211,6 @@ const Video = () => {
               )}
               {currentVideo && currentVideo.likes && currentVideo.likes.length}
             </Button>
-
             <Button onClick={handleDislike}>
               {currentVideo &&
               currentVideo.dislikes &&
@@ -222,7 +221,6 @@ const Video = () => {
               )}
               Dislike
             </Button>
-
             <Button>
               <ReplyOutlinedIcon /> Share
             </Button>

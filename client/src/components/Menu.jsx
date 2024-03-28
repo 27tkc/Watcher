@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import WatcherLight from "../img/logo-white.png";
 import WatcherDark from "../img/logo-black.png";
@@ -115,7 +115,10 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
   };
 
   const firstCatego = categories.length > 0 ? categories[0] : "Music";
-  const FirstCategoryIcon = firstCatego === "Music"? categoryIcons[firstCatego] : categoryIcons[firstCatego];
+  const FirstCategoryIcon =
+    firstCatego === "Music"
+      ? categoryIcons[firstCatego]
+      : categoryIcons[firstCatego];
 
   return (
     <Container>
@@ -163,11 +166,14 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
         </Item>
         <Hr />
         <Title>BEST OF Watcher</Title>
-        <Link to={firstCatego} style={{ textDecoration: "none", color: "inherit" }}>
-        <Item>
-          {FirstCategoryIcon && <FirstCategoryIcon />}
-          {firstCatego}
-        </Item>
+        <Link
+          to={firstCatego}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            {FirstCategoryIcon && <FirstCategoryIcon />}
+            {firstCatego}
+          </Item>
         </Link>
         {/* Render rest of the categories */}
         {Object.keys(categoryIcons).map((category, index) => {
@@ -176,9 +182,14 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           }
           const IconComponent = categoryIcons[category]; // Get the icon component
           return (
-            <Link to={category} style={{ textDecoration: "none", color: "inherit" }}>            
-              <Item key={index}>
-                {IconComponent && <IconComponent />} {/* Instantiate and render the icon component */}
+            <Link
+              to={category}
+              key={index}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Item>
+                {IconComponent && <IconComponent />}{" "}
+                {/* Instantiate and render the icon component */}
                 {category}
               </Item>
             </Link>
