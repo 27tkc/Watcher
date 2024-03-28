@@ -123,3 +123,13 @@ export const search = async (req, res, next) => {
     next(err);
   }
 };
+
+export const latestVideo = async (req, res, next) => {
+  try {
+    const latestVideos = await Video.find().sort({ createdAt: -1 }).limit(10); // Assuming you want to fetch the latest 10 videos
+    const categories = [...new Set(latestVideos.map(video => video.category))];
+    res.status(200).json(categories[0]);
+  } catch (err) {
+    next(err);
+  }
+};

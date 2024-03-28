@@ -90,6 +90,27 @@ const Upload = ({ setOpen }) => {
     setTags(e.target.value.split(","));
   };
 
+  const [category, setCategory] = useState(""); // State to hold the selected category
+
+  // Function to handle category change
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+    setInputs((prev) => {
+      return { ...prev, category: e.target.value };
+    });
+  };
+
+  // Dropdown options for categories
+  const categoryOptions = [
+    { value: "Movies", label: "Movies" },
+    { value: "Sports", label: "Sports" },
+    { value: "Gaming", label: "Gaming" },
+    { value: "Music", label: "Music" },
+    { value: "News", label: "News" },
+    { value: "Live", label: "Live" },
+    // Add more categories as needed
+  ];
+
   const uploadFile = (file, urlType) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
@@ -115,7 +136,7 @@ const Upload = ({ setOpen }) => {
             break;
         }
       },
-      (error) => {},
+      (error) => { },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setInputs((prev) => {
@@ -169,6 +190,15 @@ const Upload = ({ setOpen }) => {
           rows={8}
           onChange={handleChange}
         />
+        {/* <Label>Category:</Label> */}
+        <select value={category} onChange={handleCategoryChange}>
+          <option value="">Select a category</option>
+          {categoryOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
         <Input
           type="text"
           placeholder="Separate the tags with commas."

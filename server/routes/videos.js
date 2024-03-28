@@ -4,6 +4,7 @@ import {
   addView,
   getByTag,
   getVideo,
+  latestVideo,
   random,
   search,
   sub,
@@ -24,5 +25,6 @@ router.get("/random", random);
 router.get("/sub", verifyToken, sub);
 router.get("/tags", getByTag);
 router.get("/search", search);
+router.get("/latestVideo", latestVideo)
 
 export default router;

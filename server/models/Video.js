@@ -30,6 +30,10 @@ const VideoSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    category: {
+      type: [String],
+      default: [],
+    },
     likes: {
       type: [String],
       default: [],
