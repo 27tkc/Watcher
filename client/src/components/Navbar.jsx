@@ -75,9 +75,11 @@ const Avatar = styled.img`
 
 const Navbar = () => {
   const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const { currentUser } = useSelector((state) => state.user);
+
   return (
     <>
       <Container>

@@ -106,16 +106,14 @@ const Upload = ({ setOpen }) => {
           : setVideoPerc(Math.round(progress));
         switch (snapshot.state) {
           case "paused":
-            console.log("Upload is paused");
             break;
           case "running":
-            console.log("Upload is running");
             break;
           default:
             break;
         }
       },
-      (error) => {},
+      (error) => { },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setInputs((prev) => {
@@ -136,7 +134,6 @@ const Upload = ({ setOpen }) => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    console.log(inputs);
     const res = await axios.post("/videos", { ...inputs, tags });
     setOpen(false);
     res.status === 200 && navigate(`/video/${res.data._id}`);

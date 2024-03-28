@@ -15,7 +15,7 @@ import { dislike, fetchSuccess, like } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
 import Recommendation from "../components/Recommendation";
-
+import Modal from "../components/Modal"; // Import the Modal component
 const Container = styled.div`
   display: flex;
   gap: 24px;
@@ -120,36 +120,42 @@ const Video = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo } = useSelector((state) => state.video);
   const dispatch = useDispatch();
-
   const path = useLocation().pathname.split("/")[2];
-
   const [channel, setChannel] = useState({});
+  const [showModal, setShowModal] = useState(false); // State for showing/hiding modal
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const videoRes = await axios.get(`/videos/find/${path}`);
-        const channelRes = await axios.get(
-          `/users/find/${videoRes.data.userId}`
-        );
+        const channelRes = await axios.get(`/users/find/${videoRes.data.userId}`);
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
-      } catch (err) {}
+      } catch (err) { }
     };
     fetchData();
   }, [path, dispatch]);
 
   const handleLike = async () => {
+    if (!currentUser) {
+      setShowModal(true); // Show modal if user is not signed in
+      return;
+    }
     await axios.put(`/users/like/${currentVideo._id}`);
     dispatch(like(currentUser._id));
   };
   const handleDislike = async () => {
+    if (!currentUser) {
+      setShowModal(true); // Show modal if user is not signed in
+      return;
+    }
     await axios.put(`/users/dislike/${currentVideo._id}`);
     dispatch(dislike(currentUser._id));
   };
 
   const handleSub = async () => {
     if (!currentUser || !currentUser.subscribedUsers) {
+      setShowModal(true); // Show modal if user is not signed in
       return; // Exit early if currentUser or subscribedUsers is null
     }
 
@@ -159,6 +165,9 @@ const Video = () => {
     dispatch(subscription(channel._id));
   };
 
+  //Check if but is subscribed
+  const isSubscribed = currentUser?.subscribedUsers?.includes(channel._id);
+
   //TODO: DELETE VIDEO FUNCTIONALITY
 
   return (
@@ -166,16 +175,20 @@ const Video = () => {
       <Content>
         <VideoWrapper>
           {currentVideo && currentVideo.videoUrl && (
-            <VideoFrame src={currentVideo.videoUrl} controls autoplay />
+            <VideoFrame src={currentVideo.videoUrl}
+              controls
+              autoPlay={true}
+              style={{ borderRadius: "1rem" }}
+              muted
+              onClick={(e) => e.currentTarget.play()}
+            />
           )}
         </VideoWrapper>
 
         <Title>{currentVideo && currentVideo.title}</Title>
         <Details>
           <Info>
-            {currentVideo &&
-              currentVideo.views &&
-              `${currentVideo.views} views`}
+            {currentVideo && currentVideo.views && `${currentVideo.views} views`}
             {currentVideo &&
               currentVideo.createdAt &&
               ` • ${format(currentVideo.createdAt)}`}
@@ -184,8 +197,8 @@ const Video = () => {
           <Buttons>
             <Button onClick={handleLike}>
               {currentVideo &&
-              currentVideo.likes &&
-              currentVideo.likes.includes(currentUser?._id) ? (
+                currentVideo.likes &&
+                currentVideo.likes.includes(currentUser?._id) ? (
                 <ThumbUpIcon />
               ) : (
                 <ThumbUpOutlinedIcon />
@@ -195,8 +208,8 @@ const Video = () => {
 
             <Button onClick={handleDislike}>
               {currentVideo &&
-              currentVideo.dislikes &&
-              currentVideo.dislikes.includes(currentUser?._id) ? (
+                currentVideo.dislikes &&
+                currentVideo.dislikes.includes(currentUser?._id) ? (
                 <ThumbDownIcon />
               ) : (
                 <ThumbDownOffAltOutlinedIcon />
@@ -229,7 +242,7 @@ const Video = () => {
             </ChannelDetail>
           </ChannelInfo>
           {channel && channel._id ? (
-            <Subscribe onClick={handleSub}>
+            <Subscribe onClick={handleSub} style={{ backgroundColor: isSubscribed ? 'green' : 'red' }}>
               {currentUser?.subscribedUsers?.includes(channel._id)
                 ? "SUBSCRIBED"
                 : "SUBSCRIBE"}
@@ -244,6 +257,7 @@ const Video = () => {
       {currentVideo && currentVideo.tags ? (
         <Recommendation tags={currentVideo.tags} />
       ) : null}
+      {showModal && <Modal onClose={() => setShowModal(false)} />}
     </Container>
   );
 };

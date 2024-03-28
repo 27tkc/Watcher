@@ -22,6 +22,7 @@ import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightne
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import { Home } from "@mui/icons-material";
 
 const Container = styled.div`
   flex: 1;
@@ -125,8 +126,14 @@ const Menu = ({ darkMode, setDarkMode }) => {
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Item>
-            <SubscriptionsOutlinedIcon />
+            <Home />
             Subscriptions
+          </Item>
+        </Link>
+        <Link to="about" style={{ textDecoration: "none", color: "inherit" }}>
+          <Item>
+            <SubscriptionsOutlinedIcon />
+            About
           </Item>
         </Link>
         <Hr />

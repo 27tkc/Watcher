@@ -46,6 +46,7 @@ const ChannelName = styled.h2`
   font-size: 14px;
   color: ${({ theme }) => theme.textSoft};
   margin: 9px 0px;
+  border-raduis: 1rem;
 `;
 
 const Info = styled.div`
@@ -67,7 +68,7 @@ const Card = ({ type, video }) => {
   return (
     <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image type={type} src={video.imgUrl} />
+        <Image style={{ borderRadius: '.5rem' }} type={type} src={video.imgUrl} />
         <Details type={type}>
           <ChannelImage type={type} src={channel?.img} />
           <Texts>
