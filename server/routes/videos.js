@@ -9,6 +9,8 @@ import {
   search,
   sub,
   trend,
+  getAllVideos,
+  getAllVideosUser,
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
 
@@ -19,6 +21,8 @@ router.post("/", verifyToken, addVideo);
 router.put("/:id", verifyToken, addVideo);
 router.delete("/:id", verifyToken, addVideo);
 router.get("/find/:id", getVideo);
+router.get("/getAllVideos", getAllVideos);
+router.get("/getAllVideosUser/:id", getAllVideosUser);
 router.put("/view/:id", addView);
 router.get("/trend", trend);
 router.get("/random", random);
