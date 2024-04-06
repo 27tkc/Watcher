@@ -1,10 +1,11 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import WatcherLight from "../img/logo-white.png";
 import WatcherDark from "../img/logo-black.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import VideoLibraryOutlinedIcon from "@mui/icons-material/VideoLibraryOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
@@ -22,11 +23,12 @@ import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightne
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import { Home } from "@mui/icons-material";
 
 const Container = styled.div`
   flex: 1;
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 100% !important;
+  height: 100vh !important;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
@@ -114,7 +116,10 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
   };
 
   const firstCatego = categories.length > 0 ? categories[0] : "Music";
-  const FirstCategoryIcon = firstCatego === "Music"? categoryIcons[firstCatego] : categoryIcons[firstCatego];
+  const FirstCategoryIcon =
+    firstCatego === "Music"
+      ? categoryIcons[firstCatego]
+      : categoryIcons[firstCatego];
 
   return (
     <Container>
@@ -124,18 +129,27 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
             <Img src={logoSrc} />
           </Logo>
         </Link>
-        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+        {/* <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <HomeIcon />
             Home
           </Item>
-        </Link>
+        </Link> */}
         <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <ExploreOutlinedIcon />
             Explore
           </Item>
         </Link>
+        <Hr />
+        <Item>
+          <VideoLibraryOutlinedIcon />
+          Saved
+        </Item>
+        <Item>
+          <HistoryOutlinedIcon />
+          History
+        </Item>
         <Link
           to="subscriptions"
           style={{ textDecoration: "none", color: "inherit" }}
@@ -146,21 +160,14 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           </Item>
         </Link>
         <Hr />
-        <Item>
-          <VideoLibraryOutlinedIcon />
-          Library
-        </Item>
-        <Item>
-          <HistoryOutlinedIcon />
-          History
-        </Item>
-        <Hr />
-        <Title>BEST OF Watcher</Title>
-        <Link to={firstCatego} style={{ textDecoration: "none", color: "inherit" }}>
-        <Item>
-          {FirstCategoryIcon && <FirstCategoryIcon />}
-          {firstCatego}
-        </Item>
+        <Link
+          to={firstCatego}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            {FirstCategoryIcon && <FirstCategoryIcon />}
+            {firstCatego}
+          </Item>
         </Link>
         {/* Render rest of the categories */}
         {Object.keys(categoryIcons).map((category, index) => {
@@ -169,9 +176,14 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           }
           const IconComponent = categoryIcons[category]; // Get the icon component
           return (
-            <Link to={category} style={{ textDecoration: "none", color: "inherit" }}>            
-              <Item key={index}>
-                {IconComponent && <IconComponent />} {/* Instantiate and render the icon component */}
+            <Link
+              to={category}
+              key={index}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Item>
+                {IconComponent && <IconComponent />}{" "}
+                {/* Instantiate and render the icon component */}
                 {category}
               </Item>
             </Link>
@@ -203,22 +215,29 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           Live
         </Item> */}
         <Hr />
-        <Item>
-          <SettingsOutlinedIcon />
-          Settings
-        </Item>
-        <Item>
-          <FlagOutlinedIcon />
-          Report
-        </Item>
-        <Item>
-          <HelpOutlineOutlinedIcon />
-          Help
-        </Item>
+        {currentUser && (
+          <>
+            <Link
+              to="settings"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Item>
+                <SettingsOutlinedIcon />
+                Settings
+              </Item>
+            </Link>
+          </>
+        )}
         <Item onClick={() => setDarkMode(!darkMode)}>
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
+        <Link to="about" style={{ textDecoration: "none", color: "inherit" }}>
+          <Item>
+            <InfoOutlinedIcon />
+            About
+          </Item>
+        </Link>
         <Hr />
         {!currentUser && (
           <>
@@ -247,7 +266,6 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
                 </Button>
               </Link>
             </Logout>
-            <Hr />
           </>
         )}
       </Wrapper>

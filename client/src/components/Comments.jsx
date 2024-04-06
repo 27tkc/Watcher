@@ -4,7 +4,16 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Comment from "./Comment";
 
-const Container = styled.div``;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const ErrorMrg = styled.div`
+  color: red;
+  font-size: 1rem;
+`;
 
 const NewComment = styled.div`
   display: flex;
@@ -28,17 +37,37 @@ const Input = styled.input`
   width: 100%;
 `;
 
+const diasbledWords = ['frick', 'dog', 'damn', 'hate', 'die'];
+
 const Comments = ({ videoId }) => {
   const { currentUser } = useSelector((state) => state.user);
 
   const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState("");
+  const [commentIsBad, setCommentIsBad] = useState(false);
+
+  const handleNewComment = (e) => {
+    const commentText = e.target.value
+
+    diasbledWords.every((word) => {
+      if (commentText.toLowerCase().includes(word)) {
+        setCommentIsBad(true)
+        return false;
+      }
+
+      setCommentIsBad(false)
+      return true
+    })
+
+    setComment(commentText)
+  }
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const res = await axios.get(`/comments/${videoId}`);
         setComments(res.data);
-      } catch (err) {}
+      } catch (err) { }
     };
     fetchComments();
   }, [videoId]);
@@ -47,16 +76,17 @@ const Comments = ({ videoId }) => {
 
   return (
     <Container>
+      {commentIsBad ? <ErrorMrg>Please be polite in the comments</ErrorMrg> : null}
       <NewComment>
         {currentUser && currentUser.img ? (
           <Avatar src={currentUser.img} />
         ) : null}
-        <Input placeholder="Add a comment..." />
+        <Input value={comment} onChange={handleNewComment} placeholder="Add a comment..." />
       </NewComment>
       {comments
         ? comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
-          ))
+          <Comment key={comment._id} comment={comment} />
+        ))
         : null}
     </Container>
   );
