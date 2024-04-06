@@ -215,10 +215,19 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           Live
         </Item> */}
         <Hr />
-        <Item>
-          <SettingsOutlinedIcon />
-          Settings
-        </Item>
+        {currentUser && (
+          <>
+            <Link
+              to="settings"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Item>
+                <SettingsOutlinedIcon />
+                Settings
+              </Item>
+            </Link>
+          </>
+        )}
         <Item onClick={() => setDarkMode(!darkMode)}>
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode

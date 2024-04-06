@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Video from "./pages/Video";
 import SignIn from "./pages/SignIn";
 import Search from "./pages/Search";
+import Settings from "./pages/Settings";
 import { useSelector } from "react-redux";
 import About from "./pages/About";
 import SuperAdminDashboardMain from "./pages/SuperAdmin/SuperAdminDashboardMain";
@@ -64,6 +65,7 @@ function App() {
                   <Route path="trends" element={<Home type="trend" />} />
                   <Route path="subscriptions" element={<Home type="sub" />} />
                   <Route path="search" element={<Search />} />
+                  <Route path="settings" element={<Settings />} />
                   <Route darkMode={darkMode} path="about" element={<About />} />
                   <Route
                     path="signin"
