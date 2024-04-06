@@ -28,7 +28,7 @@ import { Home } from "@mui/icons-material";
 const Container = styled.div`
   flex: 1;
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 100% !important;
+  height: 100vh !important;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
