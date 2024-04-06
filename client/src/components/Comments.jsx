@@ -19,6 +19,7 @@ const NewComment = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-bottom: 10px;
 `;
 
 const Avatar = styled.img`
@@ -35,6 +36,11 @@ const Input = styled.input`
   outline: none;
   padding: 5px;
   width: 100%;
+`;
+const HeadingComment = styled.div`
+  margin-top: 10px;
+  font-size: 20px;
+  color: ${({ theme }) => theme.text};
 `;
 
 const diasbledWords = ["frick", "dog", "damn", "hate", "die"];
@@ -103,6 +109,8 @@ const Comments = ({ videoId }) => {
           placeholder="Add a comment..."
         />
       </NewComment>
+      <hr />
+      <HeadingComment>Comments</HeadingComment>
       {comments
         ? comments.map((comment) => (
             <Comment key={comment._id} comment={comment} />
