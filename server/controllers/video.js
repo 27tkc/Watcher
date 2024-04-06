@@ -109,11 +109,7 @@ export const getAllVideoByCategory = async (req, res, next) => {
     const { category } = req.params;
     // Query the database to find videos by category
     const videos = await Video.find({ category: category });
-    const list = await Promise.all(
-      videos.map(async (channelId) => {
-        return await Video.find({ userId: channelId });
-      })
-    )
+    
     res.json(videos);
   } catch (err) {
     console.err("Error finding videos by category:", error);
