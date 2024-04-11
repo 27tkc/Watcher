@@ -64,26 +64,36 @@ const Comments = ({ videoId }) => {
   const [commentIsBad, setCommentIsBad] = useState(false);
   const [showModal, setShowModal] = useState(false); // State variable to control modal visibility
 
-  const handleNewComment = async () => {
-    if (!comment || commentIsBad) {
-      return;
-    }
+  const handleNewComment = async (e) => {
+    if (e.key === "Enter" && !commentIsBad) {
+      if (!currentUser) {
+        setShowModal(true);
+        return;
+      }
+      try {
+        const newComment = {
+          desc: comment,
+          userId: currentUser._id,
+          videoId,
+        };
+        const res = await axios.post(`/comments/`, newComment);
+        setComments([...comments, res.data]);
+        setComment("");
+      } catch (err) {
+        console.error("Error adding comment:", err);
+      }
+    } else {
+      const commentText = e.target.value;
+      diasbledWords.every((word) => {
+        if (commentText.toLowerCase().includes(word)) {
+          setCommentIsBad(true);
+          return false;
+        }
 
-    if (!currentUser) {
-      setShowModal(true);
-      return;
-    }
-    try {
-      const newComment = {
-        desc: comment,
-        userId: currentUser ? currentUser._id : null,
-        videoId,
-      };
-      const res = await axios.post(/comments/, newComment);
-      setComments([...comments, res.data]);
-      setComment("");
-    } catch (err) {
-      console.error("Error adding comment:", err);
+        setCommentIsBad(false);
+        return true;
+      });
+      setComment(commentText);
     }
   };
 

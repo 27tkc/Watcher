@@ -42,7 +42,12 @@ const VideoSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    selectedEmoji: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
+
 export default mongoose.model("Video", VideoSchema);

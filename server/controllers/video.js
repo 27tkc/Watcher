@@ -1,4 +1,3 @@
-import User from "../models/User.js";
 import Video from "../models/Video.js";
 import { createError } from "../error.js";
 
@@ -75,21 +74,13 @@ export const getAllVideosUser = async (req, res, next) => {
     next(err);
   }
 };
+
 export const addView = async (req, res, next) => {
   try {
     await Video.findByIdAndUpdate(req.params.id, {
       $inc: { views: 1 },
     });
     res.status(200).json("The view has been increased.");
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const random = async (req, res, next) => {
-  try {
-    const videos = await Video.aggregate([{ $sample: { size: 40 } }]);
-    res.status(200).json(videos);
   } catch (err) {
     next(err);
   }
@@ -104,16 +95,11 @@ export const trend = async (req, res, next) => {
   }
 };
 
-export const getAllVideoByCategory = async (req, res, next) => {
+export const random = async (req, res, next) => {
   try {
-    const { category } = req.params;
-    // Query the database to find videos by category
-    const videos = await Video.find({ category: category });
-    
-    res.json(videos);
+    const videos = await Video.aggregate([{ $sample: { size: 40 } }]);
+    res.status(200).json(videos);
   } catch (err) {
-    console.err("Error finding videos by category:", error);
-    res.status(500).json({ err: "Internal server error" });
     next(err);
   }
 };
@@ -158,9 +144,46 @@ export const search = async (req, res, next) => {
 
 export const latestVideo = async (req, res, next) => {
   try {
-    const latestVideos = await Video.find().sort({ createdAt: -1 }).limit(10); // Assuming you want to fetch the latest 10 videos
-    const categories = [...new Set(latestVideos.map(video => video.category))];
+    const latestVideos = await Video.find().sort({ createdAt: -1 }).limit(10);
+    const categories = [
+      ...new Set(latestVideos.map((video) => video.category)),
+    ];
     res.status(200).json(categories[0]);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllVideoByCategory = async (req, res, next) => {
+  try {
+    const { category } = req.params;
+    const videos = await Video.find({ category: category });
+    res.json(videos);
+  } catch (err) {
+    console.error("Error finding videos by category:", err);
+    res.status(500).json({ err: "Internal server error" });
+    next(err);
+  }
+};
+
+export const selectEmoji = async (req, res, next) => {
+  try {
+    const { emoji } = req.body;
+    const video = await Video.findByIdAndUpdate(
+      req.params.id,
+      { selectedEmoji: emoji },
+      { new: true }
+    );
+    res.status(200).json(video);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSelectedEmoji = async (req, res, next) => {
+  try {
+    const video = await Video.findById(req.params.id);
+    res.status(200).json({ selectedEmoji: video.selectedEmoji });
   } catch (err) {
     next(err);
   }

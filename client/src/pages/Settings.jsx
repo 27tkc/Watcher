@@ -71,6 +71,12 @@ const UserInfo = styled.p`
   font-size: 20px;
   margin-bottom: 10px;
 `;
+const SettingsSecondaryHeading = styled.p`
+  font-size: 25px;
+  letter-spacing: 2px;
+  margin: 5px;
+  color: ${({ theme }) => theme.text};
+`;
 
 const Settings = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -112,14 +118,14 @@ const Settings = () => {
 
       <ProfileImage src={currentUser.img} alt={currentUser.name} />
       <br />
-      <h2>User Information:</h2>
+      <SettingsSecondaryHeading>User Information:</SettingsSecondaryHeading>
       <br />
       <UserInfo>Name: {currentUser.name}</UserInfo>
       <UserInfo>Email: {currentUser.email}</UserInfo>
       <UserInfo>Subscribers: {currentUser.subscribers}</UserInfo>
       <br />
       <br />
-      <h2>Your Videos:</h2>
+      <SettingsSecondaryHeading>Your Videos:</SettingsSecondaryHeading>
       <br />
       <TableContainer>
         <thead>

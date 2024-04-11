@@ -1,36 +1,56 @@
 import express from "express";
 import {
   addVideo,
-  addView,
-  getByTag,
+  updateVideo,
+  deleteVideo,
   getVideo,
-  latestVideo,
-  random,
-  search,
-  sub,
-  trend,
   getAllVideos,
   getAllVideosUser,
+  addView,
+  trend,
+  random,
+  sub,
+  getByTag,
+  search,
+  latestVideo,
   getAllVideoByCategory,
+  selectEmoji,
+  getSelectedEmoji,
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
 
 const router = express.Router();
 
-//create a video
+// Create, update, and delete a video
 router.post("/", verifyToken, addVideo);
-router.put("/:id", verifyToken, addVideo);
-router.delete("/:id", verifyToken, addVideo);
+router.put("/:id", verifyToken, updateVideo);
+router.delete("/:id", verifyToken, deleteVideo);
+
+// Fetch a video and all videos
 router.get("/find/:id", getVideo);
 router.get("/getAllVideos", getAllVideos);
 router.get("/getAllVideosUser/:id", getAllVideosUser);
+
+// Update view count
 router.put("/view/:id", addView);
+
+// Trending and random videos
 router.get("/trend", trend);
 router.get("/random", random);
+
+// Subscription videos
 router.get("/sub", verifyToken, sub);
+
+// Get videos by tags and search
 router.get("/tags", getByTag);
 router.get("/search", search);
+
+// Latest and category-specific videos
 router.get("/latestVideo", latestVideo);
 router.get("/:category", getAllVideoByCategory);
+
+// Select and fetch selected emoji
+router.put("/selectEmoji/:id", verifyToken, selectEmoji);
+router.get("/selectedEmoji/:id", getSelectedEmoji);
 
 export default router;
