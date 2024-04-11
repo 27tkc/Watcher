@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { Home } from "@mui/icons-material";
+import Modal from "./Modal";
 
 const Container = styled.div`
   flex: 1;
@@ -95,6 +96,7 @@ const Title = styled.h2`
 const Menu = ({ darkMode, setDarkMode, categories }) => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
   const logoSrc = darkMode ? WatcherLight : WatcherDark;
   // Function to handle signout
   const handleSignout = () => {
@@ -113,6 +115,12 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
     Gaming: SportsEsportsOutlinedIcon,
     Movies: MovieOutlinedIcon,
     News: ArticleOutlinedIcon,
+  };
+
+  const handleRestrictedAction = () => {
+    if(!currentUser){
+      setShowModal(true); // Display the modal
+    }
   };
 
   const firstCatego = categories.length > 0 ? categories[0] : "Music";
@@ -154,7 +162,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           to="subscriptions"
           style={{ textDecoration: "none", color: "inherit" }}
         >
-          <Item>
+          <Item onClick={handleRestrictedAction}>
             <SubscriptionsOutlinedIcon />
             Subscriptions
           </Item>
@@ -269,6 +277,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           </>
         )}
       </Wrapper>
+      {showModal && <Modal onClose={() => setShowModal(false)} />}
     </Container>
   );
 };

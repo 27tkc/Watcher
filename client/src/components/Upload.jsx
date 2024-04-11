@@ -70,7 +70,7 @@ const Button = styled.button`
 const Label = styled.label`
   font-size: 14px;
 `;
-const Upload = ({ setOpen }) => {
+const Upload = ({ setOpen, onClose }) => {
   const [img, setImg] = useState(undefined);
   const [video, setVideo] = useState(undefined);
   const [imgPerc, setImgPerc] = useState(0);
@@ -156,13 +156,17 @@ const Upload = ({ setOpen }) => {
     e.preventDefault();
     const res = await axios.post("/videos", { ...inputs, tags });
     setOpen(false);
+    onClose(true); // Close the modal
     res.status === 200 && navigate(`/video/${res.data._id}`);
   };
 
   return (
     <Container>
       <Wrapper>
-        <Close onClick={() => setOpen(false)}>X</Close>
+        <Close onClick={() => {
+          setOpen(false);
+          onClose(true); // Close the modal
+        }}>X</Close>
         <Title>Upload a New Video</Title>
         <Label>Video:</Label>
         {videoPerc > 0 ? (

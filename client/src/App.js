@@ -14,6 +14,7 @@ import About from "./pages/About";
 import SuperAdminDashboardMain from "./pages/SuperAdmin/SuperAdminDashboardMain";
 import SuperAdminUserDetails from "./pages/SuperAdmin/SuperAdminUserDetails";
 import SuperAdminVideoDetails from "./pages/SuperAdmin/SuperAdminVideoDetails";
+import { Upload } from "@mui/icons-material";
 
 const Container = styled.div`
   display: flex;
@@ -31,6 +32,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const { currentUser } = useSelector((state) => state.user);
   const [categories, setCategories] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  // const location = useLocation();
 
   // Fetch latest uploaded videos and extract their categories
   useEffect(() => {
@@ -47,6 +50,12 @@ function App() {
 
     fetchLatestVideos();
   }, []);
+
+  // Function to toggle modal visibility
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <Container>
@@ -63,8 +72,13 @@ function App() {
                 <Route path="/">
                   <Route index element={<Home type="random" />} />
                   <Route path="trends" element={<Home type="trend" />} />
-                  <Route path="subscriptions" element={<Home type="sub" />} />
+                  <Route path="subscriptions" element={currentUser ? <Home type="sub" /> : <></>} />
                   <Route path="search" element={<Search />} />
+                  <Route path="Movies" element={<Home type="Movies" />} />
+                  <Route path="Music" element={<Home type="Music" />} />
+                  <Route path="Sports" element={<Home type="Sports" />} />
+                  <Route path="Gaming" element={<Home type="Gaming" />} />
+                  <Route path="News" element={<Home type="News" />} />
                   <Route path="settings" element={<Settings />} />
                   <Route darkMode={darkMode} path="about" element={<About />} />
                   <Route
@@ -92,6 +106,7 @@ function App() {
             </Wrapper>
           </Main>
         </BrowserRouter>
+        {showModal && <Upload onClose={toggleModal} />}
       </Container>
     </ThemeProvider>
   );

@@ -10,6 +10,13 @@ const Container = styled.div`
   cursor: pointer;
   display: ${(props) => props.type === "sm" && "flex"};
   gap: 10px;
+  border: 5px solid ${({ theme }) => theme.soft}; 
+  color: ${({ theme }) => "#202020"};
+  transition: border-color 0.3s ease; 
+
+  &:hover {
+    border-color: #202020; 
+  }
 `;
 
 const Image = styled.img`

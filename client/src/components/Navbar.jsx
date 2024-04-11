@@ -76,9 +76,13 @@ const Avatar = styled.img`
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const [open, setOpen] = useState(false);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
   const [q, setQ] = useState("");
   const { currentUser } = useSelector((state) => state.user);
+
+  const handleUploadModalClose = () => {
+    setOpenUploadModal(false);
+  };
 
   return (
     <>
@@ -93,7 +97,9 @@ const Navbar = () => {
           </Search>
           {currentUser ? (
             <User>
-              <VideoCallOutlinedIcon onClick={() => setOpen(true)} />
+              {!openUploadModal && (
+                <VideoCallOutlinedIcon onClick={() => setOpenUploadModal(true)} />
+              )}
               <Avatar src={currentUser.img} />
               {currentUser.name}
             </User>
@@ -107,7 +113,9 @@ const Navbar = () => {
           )}
         </Wrapper>
       </Container>
-      {open && <Upload setOpen={setOpen} />}
+      {openUploadModal && (
+        <Upload setOpen={setOpenUploadModal} onClose={handleUploadModalClose} />
+      )}
     </>
   );
 };

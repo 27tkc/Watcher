@@ -1,4 +1,3 @@
-// Updated
 import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -6,8 +5,8 @@ import styled from "styled-components";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
-import { async } from "@firebase/util";
 import { useNavigate } from "react-router-dom";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -19,12 +18,17 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
   background-color: ${({ theme }) => theme.bgLighter};
   border: 1px solid ${({ theme }) => theme.soft};
-  padding: 20px 50px;
-  gap: 10px;
+  padding: 20px;
+  gap: 20px;
+`;
+
+const Label = styled.label`
+  width: 100px; /* Set a fixed width for labels */
+  text-align: right; /* Align label text to the right */
 `;
 
 const Title = styled.h1`
@@ -39,11 +43,19 @@ const SubTitle = styled.h2`
 const Input = styled.input`
   border: 1px solid ${({ theme }) => theme.soft};
   border-radius: 3px;
-  padding: 10px;
+  padding: 10px 10px;
   background-color: transparent;
   width: 100%;
+  margin: 10px;
+  margin-left:-10px;
   color: ${({ theme }) => theme.text};
+  transition: border-color 0.3s ease; /* Add transition for smooth effect */
+
+  &:focus {
+    border-color: ${({ theme }) => theme.primary}; /* Change border color on focus */
+  }
 `;
+
 
 const Button = styled.button`
   border-radius: 3px;
@@ -53,6 +65,11 @@ const Button = styled.button`
   cursor: pointer;
   background-color: ${({ theme }) => theme.soft};
   color: ${({ theme }) => theme.textSoft};
+`;
+
+const Error = styled.span`
+  color: red;
+  font-size: 14px;
 `;
 
 const More = styled.div`
@@ -74,6 +91,12 @@ const SignIn = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [signInError, setSignInError] = useState("");
+  const [signUpErrors, setSignUpErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -81,11 +104,62 @@ const SignIn = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const res = await axios.post("/auth/signin", { name, password });
+      // Determine if the input is an email or a username
+      const isEmail = email.includes("@");
+      const data = isEmail ? { email, password } : { name, password };
+      const res = await axios.post("/auth/signin", data);
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
       dispatch(loginFailure());
+      setSignInError("Invalid username or password.");
+    }
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    // Check if any field is empty
+    const errors = {};
+    if (!name) {
+      errors.name = "Username is required.";
+    }
+    if (!email) {
+      errors.email = "Email is required.";
+    }
+    if (!password) {
+      errors.password = "Password is required.";
+    }
+    if (Object.keys(errors).length > 0) {
+      setSignUpErrors(errors);
+      return;
+    }
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Password validation regex
+    const passwordRegex = /^(?=.\d)(?=.[a-z])(?=.[A-Z])(?=.[a-zA-Z]).{8,}$/;
+    // Check individual field validations
+    if (!emailRegex.test(email)) {
+      setSignUpErrors({ ...signUpErrors, email: "Invalid email address." });
+      return;
+    }
+    // if (!passwordRegex.test(password)) {
+    //   setSignUpErrors({
+    //     ...signUpErrors,
+    //     password:
+    //       "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
+    //   });
+    //   return;
+    // }
+    try {
+      const res = await axios.post("/auth/signup", {
+        name: name,
+        email: email,
+        password: password,
+      });
+      dispatch(loginSuccess(res.data));
+      navigate("/");
+    } catch (err) {
+      setSignUpErrors({ ...signUpErrors, global: "Failed to sign up. Please try again." });
     }
   };
 
@@ -106,50 +180,72 @@ const SignIn = () => {
       })
       .catch((error) => {
         dispatch(loginFailure());
+        setSignInError("Google sign-in failed.");
       });
   };
 
-  //TODO: REGISTER FUNCTIONALITY
-
   return (
     <Container>
-      <Wrapper>
+    <Wrapper>
+      {/* Sign in section */}
+      <div>
         <Title>Sign in</Title>
         <SubTitle>to continue to Watcher</SubTitle>
+        <Label htmlFor="signin-username">Username or Email:</Label>
         <Input
-          placeholder="username"
+          id="signin-username"
+          placeholder="Enter your username"
           onChange={(e) => setName(e.target.value)}
         />
+        <Label htmlFor="signin-password">Password:</Label>
         <Input
+          id="signin-password"
           type="password"
-          placeholder="password"
+          placeholder="Enter your password"
           onChange={(e) => setPassword(e.target.value)}
         />
+        {signInError && <Error>{signInError}</Error>}
         <Button onClick={handleLogin}>Sign in</Button>
         <Title>or</Title>
-        <Button onClick={signInWithGoogle}>Signin with Google</Button>
-        <Title>or</Title>
+        <Button onClick={signInWithGoogle}>Sign in with Google</Button>
+        <Title>Sign up</Title>
+        <SubTitle>to create a new account</SubTitle>
+        <Label htmlFor="signup-username">Username:</Label>
         <Input
-          placeholder="username"
+          id="signup-username"
+          placeholder="Enter your username"
           onChange={(e) => setName(e.target.value)}
         />
-        <Input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
+        {signUpErrors.name && <Error>{signUpErrors.name}</Error>}
+        <Label htmlFor="signup-email">Email:</Label>
         <Input
+          id="signup-email"
+          placeholder="Enter your email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        {signUpErrors.email && <Error>{signUpErrors.email}</Error>}
+        <Label htmlFor="signup-password">Password:</Label>
+        <Input
+          id="signup-password"
           type="password"
-          placeholder="password"
+          placeholder="Enter your password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button>Sign up</Button>
-      </Wrapper>
-      <More>
-        English(USA)
-        <Links>
-          <Link>Help</Link>
-          <Link>Privacy</Link>
-          <Link>Terms</Link>
-        </Links>
-      </More>
-    </Container>
+        {signUpErrors.password && <Error>{signUpErrors.password}</Error>}
+        {signUpErrors.global && <Error>{signUpErrors.global}</Error>}
+        <Button onClick={handleSignUp}>Sign up</Button>
+      </div>
+    </Wrapper>
+    {/* More section */}
+    <More>
+      English(USA)
+      <Links>
+        <Link>Help</Link>
+        <Link>Privacy</Link>
+        <Link>Terms</Link>
+      </Links>
+    </More>
+  </Container>
   );
 };
 
