@@ -84,7 +84,7 @@ const Comments = ({ videoId }) => {
       }
     } else {
       const commentText = e.target.value;
-      diasbledWords.every((word) => {
+      disabledWords.every((word) => {
         if (commentText.toLowerCase().includes(word)) {
           setCommentIsBad(true);
           return false;
