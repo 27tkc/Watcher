@@ -10,7 +10,7 @@ const Container = styled.div`
   gap: 1rem;
 `;
 
-const ErrorMrg = styled.div`
+const ErrorMsg = styled.div`
   color: red;
   font-size: 1rem;
 `;
@@ -19,6 +19,7 @@ const NewComment = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-bottom: 10px;
 `;
 
 const Avatar = styled.img`
@@ -36,8 +37,13 @@ const Input = styled.input`
   padding: 5px;
   width: 100%;
 `;
+const HeadingComment = styled.div`
+  margin-top: 10px;
+  font-size: 20px;
+  color: ${({ theme }) => theme.text};
+`;
 
-const diasbledWords = ['frick', 'dog', 'damn', 'hate', 'die'];
+const diasbledWords = ["frick", "dog", "damn", "hate", "die"];
 
 const Comments = ({ videoId }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -46,47 +52,69 @@ const Comments = ({ videoId }) => {
   const [comment, setComment] = useState("");
   const [commentIsBad, setCommentIsBad] = useState(false);
 
-  const handleNewComment = (e) => {
-    const commentText = e.target.value
-
-    diasbledWords.every((word) => {
-      if (commentText.toLowerCase().includes(word)) {
-        setCommentIsBad(true)
-        return false;
+  const handleNewComment = async (e) => {
+    if (e.key === "Enter" && !commentIsBad) {
+      try {
+        const newComment = {
+          desc: comment,
+          userId: currentUser._id,
+          videoId,
+        };
+        const res = await axios.post(`/comments/`, newComment);
+        setComments([...comments, res.data]);
+        setComment("");
+      } catch (err) {
+        console.error("Error adding comment:", err);
       }
+    } else {
+      const commentText = e.target.value;
+      diasbledWords.every((word) => {
+        if (commentText.toLowerCase().includes(word)) {
+          setCommentIsBad(true);
+          return false;
+        }
 
-      setCommentIsBad(false)
-      return true
-    })
-
-    setComment(commentText)
-  }
+        setCommentIsBad(false);
+        return true;
+      });
+      setComment(commentText);
+    }
+  };
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const res = await axios.get(`/comments/${videoId}`);
         setComments(res.data);
-      } catch (err) { }
+      } catch (err) {
+        console.error("Error fetching comments:", err);
+      }
     };
     fetchComments();
   }, [videoId]);
 
-  //TODO: ADD NEW COMMENT FUNCTIONALITY
-
   return (
     <Container>
-      {commentIsBad ? <ErrorMrg>Please be polite in the comments</ErrorMrg> : null}
+      {commentIsBad ? (
+        <ErrorMsg>Please be polite in the comments</ErrorMsg>
+      ) : null}
       <NewComment>
         {currentUser && currentUser.img ? (
-          <Avatar src={currentUser.img} />
+          <Avatar src={currentUser.img} alt="User Avatar" />
         ) : null}
-        <Input value={comment} onChange={handleNewComment} placeholder="Add a comment..." />
+        <Input
+          value={comment}
+          onChange={handleNewComment}
+          onKeyPress={handleNewComment}
+          placeholder="Add a comment..."
+        />
       </NewComment>
+      <hr />
+      <HeadingComment>Comments</HeadingComment>
       {comments
         ? comments.map((comment) => (
-          <Comment key={comment._id} comment={comment} />
-        ))
+            <Comment key={comment._id} comment={comment} />
+          ))
         : null}
     </Container>
   );
