@@ -70,17 +70,7 @@ const Button = styled.button`
 const Label = styled.label`
   font-size: 14px;
 `;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 const Upload = ({ setOpen, onClose }) => {
-=======
-
-const Upload = ({ setOpen, user }) => {
->>>>>>> Stashed changes
-=======
-
-const Upload = ({ setOpen, user }) => {
->>>>>>> Stashed changes
   const [img, setImg] = useState(undefined);
   const [video, setVideo] = useState(undefined);
   const [imgPerc, setImgPerc] = useState(0);
@@ -152,12 +142,21 @@ const Upload = ({ setOpen, user }) => {
   };
 
   return (
-    <Container onClick={() => {setOpen(false); onClose(true);}}>
+    <Container
+      onClick={() => {
+        setOpen(false);
+        onClose(true);
+      }}
+    >
       <Wrapper>
-        <Close onClick={() => {
-          setOpen(false);
-          onClose(true); // Close the modal
-        }}>X</Close>
+        <Close
+          onClick={() => {
+            setOpen(false);
+            onClose(true); // Close the modal
+          }}
+        >
+          X
+        </Close>
         <Title>Upload a New Video</Title>
         <Label>Video:</Label>
         {videoPerc > 0 ? (
