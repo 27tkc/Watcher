@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import Upload from "./Upload";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
+import Modal from "./Modal"; // Import the Modal component
 
 const Container = styled.div`
   position: sticky;
@@ -64,6 +66,7 @@ const User = styled.div`
   gap: 10px;
   font-weight: 500;
   color: ${({ theme }) => theme.text};
+  position: relative;
 `;
 
 const Avatar = styled.img`
@@ -73,16 +76,60 @@ const Avatar = styled.img`
   background-color: #999;
 `;
 
+const Dropdown = styled.div`
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: ${({ theme }) => theme.bgLighter};
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 5px;
+`;
+
+const DropdownItem = styled.div`
+  padding: 8px 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.bgHover};
+  }
+`;
+
 const Navbar = () => {
   const navigate = useNavigate();
-
+  const dropdownRef = useRef(null);
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const [q, setQ] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false); // State variable to control modal visibility
 
   const handleUploadModalClose = () => {
     setOpenUploadModal(false);
   };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  const handleSearchModal = () => {
+    if(!currentUser) {
+      setShowModal(true);
+    }else {
+      navigate(`/search?q=${q}`);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -93,15 +140,20 @@ const Navbar = () => {
               placeholder="Search"
               onChange={(e) => setQ(e.target.value)}
             />
-            <SearchOutlinedIcon onClick={() => navigate(`/search?q=${q}`)} />
+            <SearchOutlinedIcon onClick={handleSearchModal} />
           </Search>
           {currentUser ? (
             <User>
               {!openUploadModal && (
                 <VideoCallOutlinedIcon onClick={() => setOpenUploadModal(true)} />
               )}
-              <Avatar src={currentUser.img} />
+              <Avatar src={currentUser.img} onClick={() => setIsDropdownOpen(!isDropdownOpen)} />
               {currentUser.name}
+              <Dropdown ref={dropdownRef} isOpen={isDropdownOpen}>
+                <DropdownItem onClick={() => {dispatch(logout()); navigate(`/signin`)}}>Sign out</DropdownItem>
+                {/* <DropdownItem>Switch account</DropdownItem> */}
+                <DropdownItem onClick={() => { navigate(`/settings`)}}>Settings</DropdownItem>
+              </Dropdown>
             </User>
           ) : (
             <Link to="signin" style={{ textDecoration: "none" }}>
@@ -112,6 +164,7 @@ const Navbar = () => {
             </Link>
           )}
         </Wrapper>
+        {showModal && <Modal onClose={() => setShowModal(false)} />}
       </Container>
       {openUploadModal && (
         <Upload setOpen={setOpenUploadModal} onClose={handleUploadModalClose} />

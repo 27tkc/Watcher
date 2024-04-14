@@ -65,7 +65,7 @@ const Comments = ({ videoId }) => {
   const [showModal, setShowModal] = useState(false); // State variable to control modal visibility
 
   const handleNewComment = async (e) => {
-    if (e.key === "Enter" && !commentIsBad) {
+    if (!commentIsBad) {
       if (!currentUser) {
         setShowModal(true);
         return;
@@ -76,7 +76,7 @@ const Comments = ({ videoId }) => {
           userId: currentUser._id,
           videoId,
         };
-        const res = await axios.post(`/comments/`, newComment);
+        const res = await axios.post(/comments/, newComment);
         setComments([...comments, res.data]);
         setComment("");
       } catch (err) {

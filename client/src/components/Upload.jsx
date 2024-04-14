@@ -161,7 +161,7 @@ const Upload = ({ setOpen, onClose }) => {
   };
 
   return (
-    <Container>
+    <Container onClick={() => {setOpen(false); onClose(true);}}>
       <Wrapper>
         <Close onClick={() => {
           setOpen(false);
