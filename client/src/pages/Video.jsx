@@ -5,15 +5,15 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined";
 import Comments from "../components/Comments";
-import Card from "../components/Card";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { dislike, fetchSuccess, like } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
 import Recommendation from "../components/Recommendation";
 import Modal from "../components/Modal";
+import { Modal as ModalAnt, Typography } from "antd";
 
 const Container = styled.div`
   display: flex;
@@ -116,6 +116,15 @@ const VideoFrame = styled.video`
   object-fit: cover;
 `;
 
+const downloadFileURL = async (url) => {
+  const fileName = url.split("?").shift().split("/").pop();
+  const aTag = window.document.createElement("a");
+  aTag.href = url;
+  aTag.setAttribute("download", fileName);
+  document.body.appendChild(aTag);
+  aTag.click();
+  aTag.remove();
+};
 const EmojiButton = styled.div`
   display: flex;
   align-items: center;
@@ -140,12 +149,23 @@ const ShareSaveWrapper = styled.div`
 `;
 
 const Video = () => {
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo } = useSelector((state) => state.video);
   const dispatch = useDispatch();
   const path = useLocation().pathname.split("/")[2];
   const [channel, setChannel] = useState({});
   const [showModal, setShowModal] = useState(false);
+
+  const URL = window.location.href;
+
+  const { Text } = Typography;
+
+  const toggleShareModalOpen = () => {
+    setShareModalOpen((prev) => !prev);
+  };
+
   const [selectedEmoji, setSelectedEmoji] = useState("");
 
   useEffect(() => {
@@ -225,11 +245,11 @@ const Video = () => {
         <TitleWrapper>
           <Title>{currentVideo && currentVideo.title}</Title>
           <ShareSaveWrapper>
-            <Button>
+            <Button onClick={() => setShareModalOpen(true)}>
               <ReplyOutlinedIcon /> Share
             </Button>
-            <Button>
-              <AddTaskOutlinedIcon /> Save
+            <Button onClick={() => downloadFileURL(currentVideo.videoUrl)}>
+              <AddTaskOutlinedIcon /> Download
             </Button>
           </ShareSaveWrapper>
         </TitleWrapper>
@@ -280,6 +300,22 @@ const Video = () => {
             </EmojiButton>
           </Buttons>
         </Details>
+
+        <ModalAnt
+          title="Sharable link"
+          okText="Close"
+          onCancel={toggleShareModalOpen}
+          cancelButtonProps={{ style: { display: "none" } }}
+          onOk={toggleShareModalOpen}
+          open={shareModalOpen}
+        >
+          <Text copyable>
+            <Link href={URL} target="_blank">
+              {URL}
+            </Link>
+          </Text>
+        </ModalAnt>
+
         <Hr />
         <Channel>
           <ChannelInfo>

@@ -118,7 +118,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
   };
 
   const handleRestrictedAction = () => {
-    if(!currentUser){
+    if (!currentUser) {
       setShowModal(true); // Display the modal
     }
   };

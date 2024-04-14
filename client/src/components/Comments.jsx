@@ -38,6 +38,11 @@ const Input = styled.input`
   padding: 5px;
   width: 100%;
 `;
+const HeadingComment = styled.div`
+  margin-top: 10px;
+  font-size: 20px;
+  color: ${({ theme }) => theme.text};
+`;
 
 const SendButton = styled.button`
   background-color: red};
@@ -46,12 +51,6 @@ const SendButton = styled.button`
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-`;
-
-const HeadingComment = styled.div`
-  margin-top: 10px;
-  font-size: 20px;
-  color: ${({ theme }) => theme.text};
 `;
 
 const disabledWords = ["frick", "dog", "damn", "hate", "die"];

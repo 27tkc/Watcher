@@ -11,10 +11,10 @@ import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import { useSelector } from "react-redux";
 import About from "./pages/About";
+import Upload from "./components/Upload";
 import SuperAdminDashboardMain from "./pages/SuperAdmin/SuperAdminDashboardMain";
 import SuperAdminUserDetails from "./pages/SuperAdmin/SuperAdminUserDetails";
 import SuperAdminVideoDetails from "./pages/SuperAdmin/SuperAdminVideoDetails";
-import { Upload } from "@mui/icons-material";
 
 const Container = styled.div`
   display: flex;
@@ -65,6 +65,7 @@ function App() {
             setDarkMode={setDarkMode}
             categories={categories}
           />
+
           <Main>
             <Navbar />
             <Wrapper>
@@ -72,7 +73,10 @@ function App() {
                 <Route path="/">
                   <Route index element={<Home type="random" />} />
                   <Route path="trends" element={<Home type="trend" />} />
-                  <Route path="subscriptions" element={currentUser ? <Home type="sub" /> : <></>} />
+                  <Route
+                    path="subscriptions"
+                    element={currentUser ? <Home type="sub" /> : <></>}
+                  />
                   <Route path="search" element={<Search />} />
                   <Route path="Movies" element={<Home type="Movies" />} />
                   <Route path="Music" element={<Home type="Music" />} />
