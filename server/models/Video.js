@@ -46,6 +46,15 @@ const VideoSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    videoType: {
+      type: String,
+      enum: ["Free", "Paid"],
+      default: "Free",
+    },
+    price: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

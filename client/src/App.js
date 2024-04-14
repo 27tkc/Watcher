@@ -15,6 +15,7 @@ import Upload from "./components/Upload";
 import SuperAdminDashboardMain from "./pages/SuperAdmin/SuperAdminDashboardMain";
 import SuperAdminUserDetails from "./pages/SuperAdmin/SuperAdminUserDetails";
 import SuperAdminVideoDetails from "./pages/SuperAdmin/SuperAdminVideoDetails";
+import Checkout from "./pages/Checkout";
 
 const Container = styled.div`
   display: flex;
@@ -84,6 +85,7 @@ function App() {
                   <Route path="Gaming" element={<Home type="Gaming" />} />
                   <Route path="News" element={<Home type="News" />} />
                   <Route path="settings" element={<Settings />} />
+                  <Route path="settings/checkout" element={<Checkout />} />
                   <Route darkMode={darkMode} path="about" element={<About />} />
                   <Route
                     path="signin"

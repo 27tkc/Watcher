@@ -70,13 +70,24 @@ const Button = styled.button`
 const Label = styled.label`
   font-size: 14px;
 `;
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 const Upload = ({ setOpen, onClose }) => {
+=======
+
+const Upload = ({ setOpen, user }) => {
+>>>>>>> Stashed changes
+=======
+
+const Upload = ({ setOpen, user }) => {
+>>>>>>> Stashed changes
   const [img, setImg] = useState(undefined);
   const [video, setVideo] = useState(undefined);
   const [imgPerc, setImgPerc] = useState(0);
   const [videoPerc, setVideoPerc] = useState(0);
   const [inputs, setInputs] = useState({});
   const [tags, setTags] = useState([]);
+  const [videoType, setVideoType] = useState("Free"); // Default to Free video
 
   const navigate = useNavigate();
 
@@ -89,26 +100,6 @@ const Upload = ({ setOpen, onClose }) => {
   const handleTags = (e) => {
     setTags(e.target.value.split(","));
   };
-
-  const [category, setCategory] = useState(""); // State to hold the selected category
-
-  // Function to handle category change
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-    setInputs((prev) => {
-      return { ...prev, category: e.target.value };
-    });
-  };
-
-  // Dropdown options for categories
-  const categoryOptions = [
-    { value: "Movies", label: "Movies" },
-    { value: "Sports", label: "Sports" },
-    { value: "Gaming", label: "Gaming" },
-    { value: "Music", label: "Music" },
-    { value: "News", label: "News" },
-    // Add more categories as needed
-  ];
 
   const uploadFile = (file, urlType) => {
     const storage = getStorage(app);
@@ -133,7 +124,7 @@ const Upload = ({ setOpen, onClose }) => {
             break;
         }
       },
-      (error) => { },
+      (error) => {},
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setInputs((prev) => {
@@ -154,7 +145,7 @@ const Upload = ({ setOpen, onClose }) => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    const res = await axios.post("/videos", { ...inputs, tags });
+    const res = await axios.post("/videos", { ...inputs, tags, videoType });
     setOpen(false);
     onClose(true); // Close the modal
     res.status === 200 && navigate(`/video/${res.data._id}`);
@@ -190,14 +181,15 @@ const Upload = ({ setOpen, onClose }) => {
           rows={8}
           onChange={handleChange}
         />
-        {/* <Label>Category:</Label> */}
-        <select value={category} onChange={handleCategoryChange}>
+        <Label>Category:</Label>
+        <select value={inputs.category} onChange={handleChange} name="category">
           <option value="">Select a category</option>
-          {categoryOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          <option value="Movies">Movies</option>
+          <option value="Sports">Sports</option>
+          <option value="Gaming">Gaming</option>
+          <option value="Music">Music</option>
+          <option value="News">News</option>
+          {/* Add more categories as needed */}
         </select>
         <Input
           type="text"
@@ -214,6 +206,14 @@ const Upload = ({ setOpen, onClose }) => {
             onChange={(e) => setImg(e.target.files[0])}
           />
         )}
+        <Label>Video Type:</Label>
+        <select
+          value={videoType}
+          onChange={(e) => setVideoType(e.target.value)}
+        >
+          <option value="Free">Free</option>
+          <option value="Paid">Paid</option>
+        </select>
         <Button onClick={handleUpload}>Upload</Button>
       </Wrapper>
     </Container>
