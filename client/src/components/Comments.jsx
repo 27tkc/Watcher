@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Comment from "./Comment";
+import Modal from "./Modal"; // Import the Modal component
 
 const Container = styled.div`
   display: flex;
@@ -43,7 +44,16 @@ const HeadingComment = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
-const diasbledWords = ["frick", "dog", "damn", "hate", "die"];
+const SendButton = styled.button`
+  background-color: red};
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+const disabledWords = ["frick", "dog", "damn", "hate", "die"];
 
 const Comments = ({ videoId }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -51,9 +61,14 @@ const Comments = ({ videoId }) => {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [commentIsBad, setCommentIsBad] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State variable to control modal visibility
 
   const handleNewComment = async (e) => {
     if (e.key === "Enter" && !commentIsBad) {
+      if (!currentUser) {
+        setShowModal(true);
+        return;
+      }
       try {
         const newComment = {
           desc: comment,
@@ -68,7 +83,7 @@ const Comments = ({ videoId }) => {
       }
     } else {
       const commentText = e.target.value;
-      diasbledWords.every((word) => {
+      disabledWords.every((word) => {
         if (commentText.toLowerCase().includes(word)) {
           setCommentIsBad(true);
           return false;
@@ -104,10 +119,10 @@ const Comments = ({ videoId }) => {
         ) : null}
         <Input
           value={comment}
-          onChange={handleNewComment}
-          onKeyPress={handleNewComment}
+          onChange={(e) => setComment(e.target.value)}
           placeholder="Add a comment..."
         />
+        <SendButton onClick={handleNewComment}>Send</SendButton>
       </NewComment>
       <hr />
       <HeadingComment>Comments</HeadingComment>
@@ -116,6 +131,8 @@ const Comments = ({ videoId }) => {
             <Comment key={comment._id} comment={comment} />
           ))
         : null}
+      {/* Render the modal component conditionally */}
+      {showModal && <Modal onClose={() => setShowModal(false)} />}
     </Container>
   );
 };

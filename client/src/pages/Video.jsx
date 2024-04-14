@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
-import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
@@ -15,7 +13,7 @@ import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
 import Recommendation from "../components/Recommendation";
 import Modal from "../components/Modal";
-import { Modal as ModalAnt, Typography } from 'antd';
+import { Modal as ModalAnt, Typography } from "antd";
 
 const Container = styled.div`
   display: flex;
@@ -119,7 +117,6 @@ const VideoFrame = styled.video`
 `;
 
 const downloadFileURL = async (url) => {
-
   const fileName = url.split("?").shift().split("/").pop();
   const aTag = window.document.createElement("a");
   aTag.href = url;
@@ -127,8 +124,29 @@ const downloadFileURL = async (url) => {
   document.body.appendChild(aTag);
   aTag.click();
   aTag.remove();
+};
+const EmojiButton = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+`;
 
-}
+const Emoji = styled.span`
+  font-size: 24px;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: ${({ theme }) => theme.text};
+`;
+
+const ShareSaveWrapper = styled.div`
+  display: flex;
+  gap: 20px;
+`;
 
 const Video = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -145,10 +163,10 @@ const Video = () => {
   const { Text } = Typography;
 
   const toggleShareModalOpen = () => {
-    setShareModalOpen(prev => !prev)
-  }
+    setShareModalOpen((prev) => !prev);
+  };
 
-
+  const [selectedEmoji, setSelectedEmoji] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -157,9 +175,13 @@ const Video = () => {
         const channelRes = await axios.get(
           `/users/find/${videoRes.data.userId}`
         );
+        const selectedEmojiRes = await axios.get(
+          `/videos/selectedEmoji/${videoRes.data._id}`
+        );
         await axios.put(`/videos/view/${path}`);
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
+        setSelectedEmoji(selectedEmojiRes.data.selectedEmoji);
       } catch (err) {
         console.error("Error fetching data:", err);
       }
@@ -167,22 +189,28 @@ const Video = () => {
     fetchData();
   }, [path, dispatch]);
 
-  const handleLike = async () => {
+  const handleEmojiClick = async (emoji) => {
     if (!currentUser) {
       setShowModal(true);
       return;
     }
-    await axios.put(`/users/like/${currentVideo._id}`);
-    dispatch(like(currentUser._id));
-  };
 
-  const handleDislike = async () => {
-    if (!currentUser) {
-      setShowModal(true);
-      return;
+    const videoId = currentVideo._id;
+    try {
+      const response = await axios.put(`/videos/selectEmoji/${videoId}`, {
+        emoji,
+      });
+      if (response.status === 200) {
+        setSelectedEmoji(emoji);
+        dispatch(
+          emoji === "👍" || emoji === "😆" || emoji === "❤️"
+            ? like(currentUser._id)
+            : dislike(currentUser._id)
+        );
+      }
+    } catch (err) {
+      console.error("Error selecting emoji:", err);
     }
-    await axios.put(`/users/dislike/${currentVideo._id}`);
-    dispatch(dislike(currentUser._id));
   };
 
   const handleSub = async () => {
@@ -214,7 +242,17 @@ const Video = () => {
             />
           )}
         </VideoWrapper>
-        <Title>{currentVideo && currentVideo.title}</Title>
+        <TitleWrapper>
+          <Title>{currentVideo && currentVideo.title}</Title>
+          <ShareSaveWrapper>
+            <Button onClick={() => setShareModalOpen(true)}>
+              <ReplyOutlinedIcon /> Share
+            </Button>
+            <Button onClick={() => downloadFileURL(currentVideo.videoUrl)}>
+              <AddTaskOutlinedIcon /> Download
+            </Button>
+          </ShareSaveWrapper>
+        </TitleWrapper>
         <Details>
           <Info>
             {currentVideo &&
@@ -225,32 +263,41 @@ const Video = () => {
               ` • ${format(currentVideo.createdAt)}`}
           </Info>
           <Buttons>
-            <Button onClick={handleLike}>
-              {currentVideo &&
-                currentVideo.likes &&
-                currentVideo.likes.includes(currentUser?._id) ? (
-                <ThumbUpIcon />
-              ) : (
-                <ThumbUpOutlinedIcon />
-              )}
-              {currentVideo && currentVideo.likes && currentVideo.likes.length}
-            </Button>
-            <Button onClick={handleDislike}>
-              {currentVideo &&
-                currentVideo.dislikes &&
-                currentVideo.dislikes.includes(currentUser?._id) ? (
-                <ThumbDownIcon />
-              ) : (
-                <ThumbDownOffAltOutlinedIcon />
-              )}
-              Dislike
-            </Button>
-            <Button onClick={toggleShareModalOpen}>
-              <ReplyOutlinedIcon /> Share
-            </Button>
-            <Button onClick={() => downloadFileURL(currentVideo.videoUrl)}>
-              <AddTaskOutlinedIcon /> Download
-            </Button>
+            <EmojiButton onClick={() => handleEmojiClick("👍")}>
+              <Emoji
+                style={{ fontSize: selectedEmoji === "👍" ? "35px" : "24px" }}
+              >
+                👍
+              </Emoji>
+            </EmojiButton>
+            <EmojiButton onClick={() => handleEmojiClick("😆")}>
+              <Emoji
+                style={{ fontSize: selectedEmoji === "😆" ? "35px" : "24px" }}
+              >
+                😆
+              </Emoji>
+            </EmojiButton>
+            <EmojiButton onClick={() => handleEmojiClick("❤️")}>
+              <Emoji
+                style={{ fontSize: selectedEmoji === "❤️" ? "35px" : "24px" }}
+              >
+                ❤️
+              </Emoji>
+            </EmojiButton>
+            <EmojiButton onClick={() => handleEmojiClick("😢")}>
+              <Emoji
+                style={{ fontSize: selectedEmoji === "😢" ? "35px" : "24px" }}
+              >
+                😢
+              </Emoji>
+            </EmojiButton>
+            <EmojiButton onClick={() => handleEmojiClick("😡")}>
+              <Emoji
+                style={{ fontSize: selectedEmoji === "😡" ? "35px" : "24px" }}
+              >
+                😡
+              </Emoji>
+            </EmojiButton>
           </Buttons>
         </Details>
 
@@ -258,7 +305,7 @@ const Video = () => {
           title="Sharable link"
           okText="Close"
           onCancel={toggleShareModalOpen}
-          cancelButtonProps={{ style: { display: 'none' } }}
+          cancelButtonProps={{ style: { display: "none" } }}
           onOk={toggleShareModalOpen}
           open={shareModalOpen}
         >
