@@ -5,17 +5,18 @@ import styled from "styled-components";
 import { format } from "timeago.js";
 
 const Container = styled.div`
-  width: ${(props) => props.type !== "sm" && "360px"};
-  margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
+  width: ${(props) => props.type !== "sm" && "260px"};
   cursor: pointer;
-  display: ${(props) => props.type === "sm" && "flex"};
-  gap: 10px;
-  border: 5px solid ${({ theme }) => theme.soft}; 
+  display: ${(props) => props.type === "flex" && "flex"};
+  gap: 1.5rem;
+  border: 5px solid ${({ theme }) => theme.soft};
   color: ${({ theme }) => "#202020"};
-  transition: border-color 0.3s ease; 
+  transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #202020; 
+    border-color: #202020;
+    transition: 200ms;
+    transform: scale(1.05);
   }
 `;
 
@@ -75,7 +76,11 @@ const Card = ({ type, video }) => {
   return (
     <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image style={{ borderRadius: '.5rem' }} type={type} src={video.imgUrl} />
+        <Image
+          style={{ borderRadius: ".5rem" }}
+          type={type}
+          src={video.imgUrl}
+        />
         <Details type={type}>
           <ChannelImage type={type} src={channel?.img} />
           <Texts>

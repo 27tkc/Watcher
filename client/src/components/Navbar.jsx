@@ -117,9 +117,9 @@ const Navbar = () => {
   };
 
   const handleSearchModal = () => {
-    if(!currentUser) {
+    if (!currentUser) {
       setShowModal(true);
-    }else {
+    } else {
       navigate(`/search?q=${q}`);
     }
   }
@@ -150,9 +150,9 @@ const Navbar = () => {
               <Avatar src={currentUser.img} onClick={() => setIsDropdownOpen(!isDropdownOpen)} />
               {currentUser.name}
               <Dropdown ref={dropdownRef} isOpen={isDropdownOpen}>
-                <DropdownItem onClick={() => {dispatch(logout()); navigate(`/signin`)}}>Sign out</DropdownItem>
+                <DropdownItem onClick={() => { dispatch(logout()); navigate(`/signin`) }}>Sign out</DropdownItem>
                 {/* <DropdownItem>Switch account</DropdownItem> */}
-                <DropdownItem onClick={() => { navigate(`/settings`)}}>Settings</DropdownItem>
+                <DropdownItem onClick={() => { navigate(`/settings`) }}>Settings</DropdownItem>
               </Dropdown>
             </User>
           ) : (
