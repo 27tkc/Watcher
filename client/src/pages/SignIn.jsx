@@ -12,32 +12,35 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 56px);
+  ${'' /* height: calc(100vh - 56px); */}
   color: ${({ theme }) => theme.text};
 `;
 
 const Wrapper = styled.div`
   display: flex;
+  width: 30rem;
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.bgLighter};
   border: 1px solid ${({ theme }) => theme.soft};
-  padding: 20px;
-  gap: 20px;
+  padding: 2rem;
+  gap: 2rem;
 `;
 
 const Label = styled.label`
   width: 100px; /* Set a fixed width for labels */
-  text-align: right; /* Align label text to the right */
 `;
 
 const Title = styled.h1`
   font-size: 24px;
+  text-align:center;
 `;
 
 const SubTitle = styled.h2`
   font-size: 20px;
   font-weight: 300;
+  text-align:center;
+  margin-bottom: 1rem;
 `;
 
 const Input = styled.input`
@@ -62,6 +65,8 @@ const Button = styled.button`
   border: none;
   padding: 10px 20px;
   font-weight: 500;
+  width: 100%;
+  margin: 0.5rem 0rem;
   cursor: pointer;
   background-color: ${({ theme }) => theme.soft};
   color: ${({ theme }) => theme.textSoft};
@@ -186,66 +191,66 @@ const SignIn = () => {
 
   return (
     <Container>
-    <Wrapper>
-      {/* Sign in section */}
-      <div>
-        <Title>Sign in</Title>
-        <SubTitle>to continue to Watcher</SubTitle>
-        <Label htmlFor="signin-username">Username or Email:</Label>
-        <Input
-          id="signin-username"
-          placeholder="Enter your username"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Label htmlFor="signin-password">Password:</Label>
-        <Input
-          id="signin-password"
-          type="password"
-          placeholder="Enter your password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {signInError && <Error>{signInError}</Error>}
-        <Button onClick={handleLogin}>Sign in</Button>
-        <Title>or</Title>
-        <Button onClick={signInWithGoogle}>Sign in with Google</Button>
-        <Title>Sign up</Title>
-        <SubTitle>to create a new account</SubTitle>
-        <Label htmlFor="signup-username">Username:</Label>
-        <Input
-          id="signup-username"
-          placeholder="Enter your username"
-          onChange={(e) => setName(e.target.value)}
-        />
-        {signUpErrors.name && <Error>{signUpErrors.name}</Error>}
-        <Label htmlFor="signup-email">Email:</Label>
-        <Input
-          id="signup-email"
-          placeholder="Enter your email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        {signUpErrors.email && <Error>{signUpErrors.email}</Error>}
-        <Label htmlFor="signup-password">Password:</Label>
-        <Input
-          id="signup-password"
-          type="password"
-          placeholder="Enter your password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {signUpErrors.password && <Error>{signUpErrors.password}</Error>}
-        {signUpErrors.global && <Error>{signUpErrors.global}</Error>}
-        <Button onClick={handleSignUp}>Sign up</Button>
-      </div>
-    </Wrapper>
-    {/* More section */}
-    <More>
-      English(USA)
-      <Links>
-        <Link>Help</Link>
-        <Link>Privacy</Link>
-        <Link>Terms</Link>
-      </Links>
-    </More>
-  </Container>
+      <Wrapper>
+        {/* Sign in section */}
+        <div>
+          <Title>Sign in</Title>
+          <SubTitle>to continue to Watcher</SubTitle>
+          <Label htmlFor="signin-username">Username or Email:</Label>
+          <Input
+            id="signin-username"
+            placeholder="Enter your username"
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Label htmlFor="signin-password">Password:</Label>
+          <Input
+            id="signin-password"
+            type="password"
+            placeholder="Enter your password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {signInError && <Error>{signInError}</Error>}
+          <Button onClick={handleLogin}>Sign in</Button>
+          <Title>or</Title>
+          <Button onClick={signInWithGoogle}>Sign in with Google</Button>
+          <Title>Sign up</Title>
+          <SubTitle>to create a new account</SubTitle>
+          <Label htmlFor="signup-username">Username:</Label>
+          <Input
+            id="signup-username"
+            placeholder="Enter your username"
+            onChange={(e) => setName(e.target.value)}
+          />
+          {signUpErrors.name && <Error>{signUpErrors.name}</Error>}
+          <Label htmlFor="signup-email">Email:</Label>
+          <Input
+            id="signup-email"
+            placeholder="Enter your email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {signUpErrors.email && <Error>{signUpErrors.email}</Error>}
+          <Label htmlFor="signup-password">Password:</Label>
+          <Input
+            id="signup-password"
+            type="password"
+            placeholder="Enter your password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {signUpErrors.password && <Error>{signUpErrors.password}</Error>}
+          {signUpErrors.global && <Error>{signUpErrors.global}</Error>}
+          <Button onClick={handleSignUp}>Sign up</Button>
+        </div>
+      </Wrapper>
+      {/* More section */}
+      <More>
+        English(USA)
+        <Links>
+          <Link>Help</Link>
+          <Link>Privacy</Link>
+          <Link>Terms</Link>
+        </Links>
+      </More>
+    </Container>
   );
 };
 
