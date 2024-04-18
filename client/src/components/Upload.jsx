@@ -156,16 +156,16 @@ const Upload = ({ setOpen, onClose }) => {
     e.preventDefault();
     const res = await axios.post("/videos", { ...inputs, tags });
     setOpen(false);
-    onClose(true); // Close the modal
+    onClose(false); // Close the modal
     res.status === 200 && navigate(`/video/${res.data._id}`);
   };
 
   return (
-    <Container>
+    <Container onClick={() => { onClose(false);}}>
       <Wrapper>
         <Close onClick={() => {
           setOpen(false);
-          onClose(true); // Close the modal
+          onClose(false); // Close the modal
         }}>X</Close>
         <Title>Upload a New Video</Title>
         <Label>Video:</Label>
