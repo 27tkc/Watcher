@@ -3,7 +3,7 @@
   "builds": [{ "src": "./index.js", "use": "@vercel/node" }],
   "routes": [
     { "src": "/api/auth/(.*)", "dest": "/routes/auth/$1" },
-    { "src": "/api/users/(.*)", "dest": "/routes/users/$1" },
+    { "src": "/api/users/(.*)", "dest": "/routes/users" },
     { "src": "/api/videos/(.*)", "dest": "/routes/videos/$1" },
     { "src": "/api/comments/(.*)", "dest": "/routes/comments/$1" },
     { "src": "/api/payments/(.*)", "dest": "/routes/payments/$1" },
