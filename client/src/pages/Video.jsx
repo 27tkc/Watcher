@@ -177,7 +177,7 @@ const Video = () => {
       try {
         const videoRes = await axios.get(`https://backend-watcher-production.up.railway.app/api/videos/find/${path}`);
         const channelRes = await axios.get(
-          `/users/find/${videoRes.data.userId}`
+          `https://backend-watcher-production.up.railway.app/api/users/find/${videoRes.data.userId}`
         );
         const selectedEmojiRes = await axios.get(
           `https://backend-watcher-production.up.railway.app/api/videos/selectedEmoji/${videoRes.data._id}`
