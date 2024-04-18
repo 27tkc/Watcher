@@ -55,7 +55,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://watcher-plum.vercel.app/api/",
+  "proxy": "https://watcher-plum.vercel.app/api",
   "devDependencies": {
     "gh-pages": "^6.1.1"
   }

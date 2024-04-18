@@ -16,7 +16,7 @@ import SuperAdminDashboardMain from "./pages/SuperAdmin/SuperAdminDashboardMain"
 import SuperAdminUserDetails from "./pages/SuperAdmin/SuperAdminUserDetails";
 import SuperAdminVideoDetails from "./pages/SuperAdmin/SuperAdminVideoDetails";
 import Checkout from "./pages/Checkout";
-
+import axios from "axios";
 const Container = styled.div`
   display: flex;
   height: 100%;
@@ -44,8 +44,9 @@ function App() {
     const fetchLatestVideos = async () => {
       try {
         // Fetch latest uploaded videos
-        const response = await fetch("/videos/latestVideo");
-        const latestVideos = await response.json();
+        const response = await axios.get("https://watcher-plum.vercel.app/videos/latestVideo");
+        console.log(response);
+        const latestVideos = await response.data;
         setCategories(latestVideos);
       } catch (error) {
         console.error("Error fetching latest videos:", error);
