@@ -112,7 +112,7 @@ const SignIn = () => {
       // Determine if the input is an email or a username
       const isEmail = email.includes("@");
       const data = isEmail ? { email, password } : { name, password };
-      const res = await axios.post("/auth/signin", data);
+      const res = await axios.post("https://backend-watcher-production.up.railway.app/api/auth/signin", data);
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
@@ -156,7 +156,7 @@ const SignIn = () => {
     //   return;
     // }
     try {
-      const res = await axios.post("/auth/signup", {
+      const res = await axios.post("https://backend-watcher-production.up.railway.app/api/auth/signup", {
         name: name,
         email: email,
         password: password,

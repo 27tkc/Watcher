@@ -87,7 +87,7 @@ const Checkout = () => {
       } else if (videoId) {
         // Fetch video data
         try {
-          const response = await axios.get(`videos/find/${videoId}`);
+          const response = await axios.get(`https://backend-watcher-production.up.railway.app/api/videos/find/${videoId}`);
           const video = response.data;
           setItems({
             name: video.title,
@@ -115,7 +115,7 @@ const Checkout = () => {
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = "/payments/verify";
+          const verifyUrl = "https://backend-watcher-production.up.railway.app/api/payments/verify";
           const { data } = await axios.post(verifyUrl, response);
           alert(data.message);
           redirectAfterSuccessfulPayment();
@@ -134,7 +134,7 @@ const Checkout = () => {
   const redirectAfterSuccessfulPayment = async () => {
     try {
       if (userId) {
-        let response = await axios.put(`/users/${userId}`, {
+        let response = await axios.put(`https://backend-watcher-production.up.railway.app/api/users/${userId}`, {
           membershipType: "Premium",
         });
         if (response.statusText === "OK") {
@@ -147,7 +147,7 @@ const Checkout = () => {
       }
       if (videoId) {
         let response = await axios.put(
-          `/videos/buyVideo/${videoId}/${videoUser}`
+          `https://backend-watcher-production.up.railway.app/api/videos/buyVideo/${videoId}/${videoUser}`
         );
         dispatch(fetchSuccess(response.data));
         window.location.href = `video/${videoId}`;
@@ -158,7 +158,7 @@ const Checkout = () => {
   };
   const makePayment = async () => {
     try {
-      const orderUrl = "/payments/orders";
+      const orderUrl = "https://backend-watcher-production.up.railway.app/api/payments/orders";
       const { data } = await axios.post(orderUrl, { amount: items.price });
       initPayment(data.data);
     } catch (error) {

@@ -150,7 +150,7 @@ const Upload = ({ setOpen, onClose }) => {
   const handleUpload = async (e) => {
     e.preventDefault();
     const newPrice = videoType === "Paid" ? price : 0;
-    const res = await axios.post("/videos", {
+    const res = await axios.post("https://backend-watcher-production.up.railway.app/api/videos", {
       ...inputs,
       tags,
       videoType,
