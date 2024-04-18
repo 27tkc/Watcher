@@ -4,7 +4,7 @@ import Card from "../components/Card";
 import axios from "axios";
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap: 2rem;
   flex-wrap: wrap;
 `;
 
@@ -13,7 +13,7 @@ const Home = ({ type }) => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get(`/videos/${type}`);
+      const res = await axios.get(`https://backend-watcher-production.up.railway.app/api/videos/${type}`);
       setVideos(res.data);
     };
     fetchVideos();

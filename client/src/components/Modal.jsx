@@ -15,7 +15,8 @@ const ModalContainer = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.background}; /* Use background color from theme */
+  background-color: ${({ theme }) =>
+    theme.background}; /* Use background color from theme */
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add box shadow for depth */
@@ -38,7 +39,8 @@ const CloseButton = styled.button`
   transition: background-color 0.3s ease; /* Add transition for smooth hover effect */
 
   &:hover {
-    background-color: ${({ theme }) => theme.primaryDark}; /* Darken primary color on hover */
+    background-color: ${({ theme }) =>
+      theme.primaryDark}; /* Darken primary color on hover */
   }
 `;
 
@@ -53,16 +55,15 @@ const RedirectButton = styled.button`
 `;
 
 const Modal = ({ onClose }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <ModalContainer onClick={onClose}>
       <ModalContent>
         <div>
-        <ModalText>You have to sign in to use this feature.</ModalText>
-
+          <ModalText>You have to sign in to use this feature.</ModalText>
         </div>
 
-      <div>
+        <div>
           <RedirectButton onClick={() => navigate(`/signin`)}>
             Sign in
           </RedirectButton>

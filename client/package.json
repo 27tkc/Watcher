@@ -1,5 +1,5 @@
 {
-  "name": "Watcher",
+  "name": "watcher",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,9 +8,11 @@
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
     "@reduxjs/toolkit": "^2.2.1",
+    "@stripe/stripe-js": "^3.3.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
+    "antd": "^5.16.1",
     "axios": "^1.6.7",
     "firebase": "^10.8.1",
     "react": "^18.0.0",
@@ -29,6 +31,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -51,5 +55,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8800/api/"
+  "proxy": "https://backend-watcher-production.up.railway.app/api",
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  }
 }

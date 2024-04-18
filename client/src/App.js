@@ -11,21 +11,26 @@ import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import { useSelector } from "react-redux";
 import About from "./pages/About";
+import Upload from "./components/Upload";
 import SuperAdminDashboardMain from "./pages/SuperAdmin/SuperAdminDashboardMain";
 import SuperAdminUserDetails from "./pages/SuperAdmin/SuperAdminUserDetails";
 import SuperAdminVideoDetails from "./pages/SuperAdmin/SuperAdminVideoDetails";
-import { Upload } from "@mui/icons-material";
+import Checkout from "./pages/Checkout";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const Main = styled.div`
   flex: 7;
   background-color: ${({ theme }) => theme.bg};
+  height: 100%;
 `;
 const Wrapper = styled.div`
-  padding: 22px 96px;
+  padding: 20px 20px 20px 40px;
+  height: 100%;
 `;
 
 function App() {
@@ -40,8 +45,9 @@ function App() {
     const fetchLatestVideos = async () => {
       try {
         // Fetch latest uploaded videos
-        const response = await fetch("/videos/latestVideo");
-        const latestVideos = await response.json();
+        const response = await axios.get("/videos/latestVideo");
+        console.log(response);
+        const latestVideos = await response.data;
         setCategories(latestVideos);
       } catch (error) {
         console.error("Error fetching latest videos:", error);
@@ -65,6 +71,7 @@ function App() {
             setDarkMode={setDarkMode}
             categories={categories}
           />
+
           <Main>
             <Navbar />
             <Wrapper>
@@ -72,7 +79,10 @@ function App() {
                 <Route path="/">
                   <Route index element={<Home type="random" />} />
                   <Route path="trends" element={<Home type="trend" />} />
-                  <Route path="subscriptions" element={currentUser ? <Home type="sub" /> : <></>} />
+                  <Route
+                    path="subscriptions"
+                    element={currentUser ? <Home type="sub" /> : <></>}
+                  />
                   <Route path="search" element={<Search />} />
                   <Route path="Movies" element={<Home type="Movies" />} />
                   <Route path="Music" element={<Home type="Music" />} />
@@ -80,6 +90,7 @@ function App() {
                   <Route path="Gaming" element={<Home type="Gaming" />} />
                   <Route path="News" element={<Home type="News" />} />
                   <Route path="settings" element={<Settings />} />
+                  <Route path="checkout" element={<Checkout />} />
                   <Route darkMode={darkMode} path="about" element={<About />} />
                   <Route
                     path="signin"

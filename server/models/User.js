@@ -29,7 +29,20 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    membershipType: {
+      type: String,
+      default: "Free",
+    },
+    subscriptionStatus: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "inactive",
+    },
+    subscriptionExpiration: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
+
 export default mongoose.model("User", UserSchema);

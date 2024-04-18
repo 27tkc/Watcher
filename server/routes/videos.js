@@ -16,6 +16,8 @@ import {
   getAllVideoByCategory,
   selectEmoji,
   getSelectedEmoji,
+  buyVideo,
+  checkPurchasedUsers,
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
 
@@ -52,5 +54,11 @@ router.get("/:category", getAllVideoByCategory);
 // Select and fetch selected emoji
 router.put("/selectEmoji/:id", verifyToken, selectEmoji);
 router.get("/selectedEmoji/:id", getSelectedEmoji);
+
+//Check if a video is bought
+router.get("/checkPurchasedUsers/:videoId/:userId", checkPurchasedUsers);
+
+//Buy a video
+router.put("/buyVideo/:videoId/:userId", buyVideo);
 
 export default router;

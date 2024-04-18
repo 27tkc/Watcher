@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../error.js";
+import stripeModule from "stripe";
+const stripe = stripeModule(process.env.STRIPE_SECRET);
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
@@ -38,7 +40,6 @@ export const signin = async (req, res, next) => {
     next(err);
   }
 };
-
 export const googleAuth = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -68,11 +69,3 @@ export const googleAuth = async (req, res, next) => {
     next(err);
   }
 };
-// export const signout = async (req, res, next) => {
-//   try {
-//     res.clearCookie("access_token");
-//     res.status(200).send("User logged out successfully!");
-//   } catch (err) {
-//     next(err);
-//   }
-// };

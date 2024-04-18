@@ -30,7 +30,7 @@ const Wrapper = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   position: relative;
 `;
 const Close = styled.div`
@@ -47,7 +47,8 @@ const Input = styled.input`
   border: 1px solid ${({ theme }) => theme.soft};
   color: ${({ theme }) => theme.text};
   border-radius: 3px;
-  padding: 10px;
+  padding: 2px;
+  height: 30px;
   background-color: transparent;
   z-index: 999;
 `;
@@ -64,8 +65,10 @@ const Button = styled.button`
   padding: 10px 20px;
   font-weight: 500;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.soft};
-  color: ${({ theme }) => theme.textSoft};
+  background-color: ${({ theme, isFormComplete }) =>
+    isFormComplete ? theme.success : theme.soft};
+  color: ${({ theme, isFormComplete }) =>
+    isFormComplete ? theme.text : theme.soft};
 `;
 const Label = styled.label`
   font-size: 14px;
@@ -77,7 +80,9 @@ const Upload = ({ setOpen, onClose }) => {
   const [videoPerc, setVideoPerc] = useState(0);
   const [inputs, setInputs] = useState({});
   const [tags, setTags] = useState([]);
-
+  const [videoType, setVideoType] = useState("Free"); // Default to Free video
+  const [price, setPrice] = useState(0); // Default price
+  const [isFormComplete, setIsFormComplete] = useState(false); // Track form completion
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -89,26 +94,6 @@ const Upload = ({ setOpen, onClose }) => {
   const handleTags = (e) => {
     setTags(e.target.value.split(","));
   };
-
-  const [category, setCategory] = useState(""); // State to hold the selected category
-
-  // Function to handle category change
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-    setInputs((prev) => {
-      return { ...prev, category: e.target.value };
-    });
-  };
-
-  // Dropdown options for categories
-  const categoryOptions = [
-    { value: "Movies", label: "Movies" },
-    { value: "Sports", label: "Sports" },
-    { value: "Gaming", label: "Gaming" },
-    { value: "Music", label: "Music" },
-    { value: "News", label: "News" },
-    // Add more categories as needed
-  ];
 
   const uploadFile = (file, urlType) => {
     const storage = getStorage(app);
@@ -133,7 +118,7 @@ const Upload = ({ setOpen, onClose }) => {
             break;
         }
       },
-      (error) => { },
+      (error) => {},
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setInputs((prev) => {
@@ -151,10 +136,27 @@ const Upload = ({ setOpen, onClose }) => {
   useEffect(() => {
     img && uploadFile(img, "imgUrl");
   }, [img]);
+  useEffect(() => {
+    // Check if all required inputs are filled
+    const isComplete =
+      inputs.title &&
+      inputs.description &&
+      inputs.category &&
+      ((inputs.videoUrl && videoType === "Free") || videoType === "Paid") &&
+      ((inputs.imgUrl && videoType === "Free") || videoType === "Paid");
+    setIsFormComplete(isComplete);
+  }, [inputs, videoType]);
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    const res = await axios.post("/videos", { ...inputs, tags });
+    const newPrice = videoType === "Paid" ? price : 0;
+    const res = await axios.post("https://backend-watcher-production.up.railway.app/api/videos", {
+      ...inputs,
+      tags,
+      videoType,
+      price: newPrice,
+    });
+    await axios.put(`/videos/buyVideo/${res.data._id}/${res.data.userId}`);
     setOpen(false);
     onClose(false); // Close the modal
     res.status === 200 && navigate(`/video/${res.data._id}`);
@@ -175,34 +177,78 @@ const Upload = ({ setOpen, onClose }) => {
           <Input
             type="file"
             accept="video/*"
-            onChange={(e) => setVideo(e.target.files[0])}
+            onChange={(e) => {
+              e.stopPropagation();
+              setVideo(e.target.files[0]);
+            }}
           />
         )}
         <Input
           type="text"
-          placeholder="Title"
+          placeholder="  Title"
           name="title"
-          onChange={handleChange}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleChange(e);
+          }}
         />
+        <Label>Video Type:</Label>
+        <select
+          value={videoType}
+          onChange={(e) => {
+            e.stopPropagation();
+            setVideoType(e.target.value);
+          }}
+        >
+          <option value="Free">Free</option>
+          <option value="Paid">Paid</option>
+        </select>
+        {videoType === "Paid" && (
+          <>
+            <Label>Price:</Label>
+            <Input
+              type="number"
+              value={price}
+              onChange={(e) => {
+                e.stopPropagation();
+                setPrice(e.target.value);
+              }}
+            />
+          </>
+        )}
         <Desc
           placeholder="Description"
           name="description"
           rows={8}
-          onChange={handleChange}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleChange(e);
+          }}
         />
-        {/* <Label>Category:</Label> */}
-        <select value={category} onChange={handleCategoryChange}>
+        <Label>Category:</Label>
+        <select
+          value={inputs.category}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleChange(e);
+          }}
+          name="category"
+        >
           <option value="">Select a category</option>
-          {categoryOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          <option value="Movies">Movies</option>
+          <option value="Sports">Sports</option>
+          <option value="Gaming">Gaming</option>
+          <option value="Music">Music</option>
+          <option value="News">News</option>
+          {/* Add more categories as needed */}
         </select>
         <Input
           type="text"
-          placeholder="Separate the tags with commas."
-          onChange={handleTags}
+          placeholder="  Separate the tags with commas."
+          onChange={(e) => {
+            e.stopPropagation();
+            handleTags(e);
+          }}
         />
         <Label>Image:</Label>
         {imgPerc > 0 ? (
@@ -211,10 +257,15 @@ const Upload = ({ setOpen, onClose }) => {
           <Input
             type="file"
             accept="image/*"
-            onChange={(e) => setImg(e.target.files[0])}
+            onChange={(e) => {
+              e.stopPropagation();
+              setImg(e.target.files[0]);
+            }}
           />
         )}
-        <Button onClick={handleUpload}>Upload</Button>
+        <Button onClick={handleUpload} isFormComplete={isFormComplete}>
+          Upload
+        </Button>
       </Wrapper>
     </Container>
   );

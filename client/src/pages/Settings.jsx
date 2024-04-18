@@ -1,8 +1,10 @@
+// Settings.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import UserModal from "../components/UserModal"; // Import the Modal component
 
 const Container = styled.div`
   padding: 20px;
@@ -16,7 +18,7 @@ const Title = styled.h2`
   color: ${({ theme }) => theme.text};
   display: flex;
   justify-content: center;
-  alignitems: center;
+  align-items: center;
 `;
 
 const ProfileImage = styled.img`
@@ -29,36 +31,22 @@ const ProfileImage = styled.img`
   margin-bottom: 20px;
 `;
 
-const TableContainer = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  color: ${({ theme }) => theme.text};
-`;
-
-const TableHeader = styled.th`
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  color: ${({ theme }) => theme.text};
-`;
-
-const TableCell = styled.td`
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-  color: ${({ theme }) => theme.text};
-`;
-
-const TableRow = styled.tr`
-  &:nth-child(even) {
-    background-color: ${({ theme }) => theme.bgLighter};
-  }
-`;
-
 const Button = styled.button`
   background-color: #f44336;
   color: white;
   padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.bgLighter};
+  }
+`;
+const PremimumButton = styled.button`
+  background-color: gold;
+  color: black;
+  padding: 10px 15px;
+  font-size: 18px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -78,19 +66,43 @@ const SettingsSecondaryHeading = styled.p`
   color: ${({ theme }) => theme.text};
 `;
 
+const TableContainer = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const TableHeader = styled.th`
+  background-color: ${({ theme }) => theme.bgLighter};
+  color: ${({ theme }) => theme.text};
+  padding: 12px 15px;
+  text-align: left;
+`;
+
+const TableCell = styled.td`
+  border-bottom: 1px solid ${({ theme }) => theme.bgLight};
+  padding: 12px 15px;
+`;
+
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background-color: ${({ theme }) => theme.bgLight};
+  }
+`;
+
 const Settings = () => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal open/close
 
   useEffect(() => {
     const fetchUserVideos = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `/videos/getAllVideosUser/${currentUser._id}`
+          `https://backend-watcher-production.up.railway.app/api/videos/getAllVideosUser/${currentUser._id}`
         );
         setVideos(response.data);
         setLoading(false);
@@ -103,9 +115,19 @@ const Settings = () => {
     fetchUserVideos();
   }, [currentUser]);
 
+  const handleUpgradeToPremium = async () => {
+    // Open the modal when the user clicks Upgrade to Premium
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    // Close the modal when the user clicks Close
+    setIsModalOpen(false);
+  };
+
   const handleDelete = async (videoId) => {
     try {
-      await axios.delete(`/deleteVideo/${videoId}`);
+      await axios.delete(`https://backend-watcher-production.up.railway.app/api/deleteVideo/${videoId}`);
       setVideos(videos.filter((video) => video._id !== videoId));
     } catch (error) {
       console.error("Error deleting video:", error);
@@ -118,39 +140,52 @@ const Settings = () => {
 
       <ProfileImage src={currentUser.img} alt={currentUser.name} />
       <br />
-      <SettingsSecondaryHeading>User Information:</SettingsSecondaryHeading>
-      <br />
       <UserInfo>Name: {currentUser.name}</UserInfo>
       <UserInfo>Email: {currentUser.email}</UserInfo>
       <UserInfo>Subscribers: {currentUser.subscribers}</UserInfo>
       <br />
+      {currentUser.membershipType !== "Premium" ? (
+        <Button onClick={handleUpgradeToPremium}>Upgrade to Premium</Button>
+      ) : (
+        <PremimumButton>Premium</PremimumButton>
+      )}
+      <br />
       <br />
       <SettingsSecondaryHeading>Your Videos:</SettingsSecondaryHeading>
       <br />
-      <TableContainer>
-        <thead>
-          <tr>
-            <TableHeader>Title</TableHeader>
-            <TableHeader>Views</TableHeader>
-            <TableHeader>Likes</TableHeader>
-            <TableHeader>Dislikes</TableHeader>
-            <TableHeader>Actions</TableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {videos.map((video) => (
-            <TableRow key={video._id}>
-              <TableCell>{video.title}</TableCell>
-              <TableCell>{video.views}</TableCell>
-              <TableCell>{video.likes.length}</TableCell>
-              <TableCell>{video.dislikes.length}</TableCell>
-              <TableCell>
-                <Button onClick={() => handleDelete(video._id)}>Delete</Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </tbody>
-      </TableContainer>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <TableContainer>
+          <thead>
+            <tr>
+              <TableHeader>Title</TableHeader>
+              <TableHeader>Views</TableHeader>
+              <TableHeader>Likes</TableHeader>
+              <TableHeader>Dislikes</TableHeader>
+              <TableHeader>Actions</TableHeader>
+            </tr>
+          </thead>
+          <tbody>
+            {videos.map((video) => (
+              <TableRow key={video._id}>
+                <TableCell>{video.title}</TableCell>
+                <TableCell>{video.views}</TableCell>
+                <TableCell>{video.likes.length}</TableCell>
+                <TableCell>{video.dislikes.length}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handleDelete(video._id)}>
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </tbody>
+        </TableContainer>
+      )}
+
+      {/* Render the Modal component */}
+      <UserModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </Container>
   );
 };
