@@ -3,7 +3,8 @@
 import React from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { lightTheme } from "../utils/Theme"; // Import the light theme
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -61,11 +62,11 @@ const BuyButton = styled.button`
 `;
 
 const UserModal = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
 
   const handleUpgrade = () => {
     // Navigate to the checkout page with the Premium membership parameter
-    navigate("checkout", { premiumMembership: true });
+    window.location.href = `/checkout?userId=${currentUser._id}`;
     onClose(); // Close the modal
   };
 

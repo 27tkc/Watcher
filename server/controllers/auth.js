@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../error.js";
+import stripeModule from "stripe";
+const stripe = stripeModule(process.env.STRIPE_SECRET);
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
@@ -38,7 +40,6 @@ export const signin = async (req, res, next) => {
     next(err);
   }
 };
-
 export const googleAuth = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -76,3 +77,40 @@ export const googleAuth = async (req, res, next) => {
 //     next(err);
 //   }
 // };
+
+export const stripeCheckout = async (req, res, next) => {
+  try {
+    const product = req.body.lineItems[0]; // Assuming the request body contains a single product
+    const lineItem = {
+      price_data: {
+        currency: "cad",
+        product_data: {
+          name: product.name,
+        },
+        unit_amount: Math.round(product.unit_amount),
+      },
+      quantity: product.quantity,
+    };
+
+    // Create the checkout session with Stripe
+    const session = await stripe.checkout.sessions.create(
+      {
+        payment_method_types: ["card"],
+        line_items: [lineItem], // Pass the single line item in an array
+        mode: "payment",
+        success_url: "",
+        cancel_url: "",
+      },
+      {
+        // Set the API key in the headers
+        headers: {
+          Authorization: `Bearer ${process.env.STRIPE_SECRET}`, // Replace 'YOUR_SECRET_KEY' with your actual API key
+        },
+      }
+    );
+
+    res.json({ id: session.id });
+  } catch (err) {
+    next(err);
+  }
+};

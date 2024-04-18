@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { format } from "timeago.js";
+import DefaultAvatar from "../img/default-avatar.png";
 
 const Container = styled.div`
   display: flex;
@@ -50,10 +51,15 @@ const Comment = ({ comment }) => {
 
   return (
     <Container>
-      <Avatar src={channel.img} />
+      {channel && channel.img ? (
+        <Avatar src={channel?.img} />
+      ) : (
+        <Avatar src={DefaultAvatar} />
+      )}
       <Details>
         <Name>
-          {channel.name} | {format(comment.createdAt)}
+          {channel && channel.name ? channel?.name : "Deleted User"} |{" "}
+          {format(comment.createdAt)}
         </Name>
         <Text>{comment.desc}</Text>
       </Details>

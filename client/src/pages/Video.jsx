@@ -19,13 +19,10 @@ const Container = styled.div`
   display: flex;
   gap: 24px;
 `;
-
 const Content = styled.div`
   flex: 5;
 `;
-
 const VideoWrapper = styled.div``;
-
 const Title = styled.h1`
   font-size: 18px;
   font-weight: 400;
@@ -33,72 +30,59 @@ const Title = styled.h1`
   margin-bottom: 10px;
   color: ${({ theme }) => theme.text};
 `;
-
 const Details = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
-
 const Info = styled.span`
   color: ${({ theme }) => theme.textSoft};
 `;
-
 const Buttons = styled.div`
   display: flex;
   gap: 20px;
   color: ${({ theme }) => theme.text};
 `;
-
 const Button = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
   cursor: pointer;
 `;
-
 const Hr = styled.hr`
   margin: 15px 0px;
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
-
 const Channel = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-
 const ChannelInfo = styled.div`
   display: flex;
   gap: 20px;
 `;
-
 const Image = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
 `;
-
 const ChannelDetail = styled.div`
   display: flex;
   flex-direction: column;
   color: ${({ theme }) => theme.text};
 `;
-
 const ChannelName = styled.span`
   font-weight: 500;
 `;
-
 const ChannelCounter = styled.span`
   margin-top: 5px;
   margin-bottom: 20px;
   color: ${({ theme }) => theme.textSoft};
   font-size: 12px;
 `;
-
 const Description = styled.p`
   font-size: 14px;
 `;
-
 const Subscribe = styled.button`
   background-color: #cc1a00;
   font-weight: 500;
@@ -109,13 +93,11 @@ const Subscribe = styled.button`
   padding: 10px 20px;
   cursor: pointer;
 `;
-
 const VideoFrame = styled.video`
   max-height: 720px;
   width: 100%;
   object-fit: cover;
 `;
-
 const downloadFileURL = async (url) => {
   const fileName = url.split("?").shift().split("/").pop();
   const aTag = window.document.createElement("a");
@@ -131,26 +113,49 @@ const EmojiButton = styled.div`
   gap: 2px;
   cursor: pointer;
 `;
-
 const Emoji = styled.span`
   font-size: 24px;
 `;
-
 const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: ${({ theme }) => theme.text};
 `;
-
 const ShareSaveWrapper = styled.div`
   display: flex;
   gap: 20px;
 `;
-
+const PaidButton = styled.button`
+  background-color: ${({ theme }) => theme.success};
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+const BuyButton = styled.button`
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+const PaidContentMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 720px; /* Same height as the video player */
+  width: 100%;
+  background-color: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
+  font-size: 22px;
+`;
 const Video = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
-
+  const [isBought, setIsBought] = useState(true); // State to track if video is bought
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo } = useSelector((state) => state.video);
   const dispatch = useDispatch();
@@ -159,7 +164,6 @@ const Video = () => {
   const [showModal, setShowModal] = useState(false);
 
   const URL = window.location.href;
-
   const { Text } = Typography;
 
   const toggleShareModalOpen = () => {
@@ -178,7 +182,6 @@ const Video = () => {
         const selectedEmojiRes = await axios.get(
           `/videos/selectedEmoji/${videoRes.data._id}`
         );
-        await axios.put(`/videos/view/${path}`);
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
         setSelectedEmoji(selectedEmojiRes.data.selectedEmoji);
@@ -188,6 +191,31 @@ const Video = () => {
     };
     fetchData();
   }, [path, dispatch]);
+  useEffect(() => {
+    const checkBoughtStatus = async () => {
+      if (currentVideo) {
+        const boughtStatus = await axios.get(
+          `/users/checkBoughtVideo/${currentVideo._id}`
+        );
+        setIsBought(boughtStatus.data.bought);
+        //To not increase views unless bought and then viewed
+        if (isBought) {
+          await axios.put(`/videos/view/${path}`);
+        }
+        if (currentVideo.videoType === "Free") {
+          setIsBought(true);
+        }
+      }
+    };
+
+    checkBoughtStatus();
+  }, [currentVideo]);
+  const isBoughtCheck = async () => {
+    const boughtStatus = await axios.get(
+      `/users/checkBoughtVideo/${currentVideo._id}`
+    );
+    setIsBought(boughtStatus.data.bought);
+  };
 
   const handleEmojiClick = async (emoji) => {
     if (!currentUser) {
@@ -224,14 +252,22 @@ const Video = () => {
       : await axios.put(`/users/sub/${channel._id}`);
     dispatch(subscription(channel._id));
   };
+  const goToCheckout = () => {
+    // Check if currentUser is logged in
+    if (!currentUser) {
+      setShowModal(true); // Show modal to prompt user to log in
+      return;
+    }
+    window.location.href = `/checkout?videoId=${currentVideo._id}`;
+  };
 
-  const isSubscribed = currentUser?.subscribedUsers?.includes(channel._id);
-
+  const isSubscribed = currentUser?.subscribedUsers?.includes(channel?._id);
   return (
     <Container>
       <Content>
         <VideoWrapper>
-          {currentVideo && currentVideo.videoUrl && (
+          {/* Display the video player if video is bought, otherwise display the paid content message */}
+          {isBought ? (
             <VideoFrame
               src={currentVideo.videoUrl}
               controls
@@ -240,17 +276,36 @@ const Video = () => {
               muted
               onClick={(e) => e.currentTarget.play()}
             />
+          ) : (
+            <PaidContentMessage>
+              <strong>Paid Content:</strong>
+              <br />
+              You have to buy this video to watch !
+            </PaidContentMessage>
           )}
         </VideoWrapper>
         <TitleWrapper>
           <Title>{currentVideo && currentVideo.title}</Title>
+          {currentVideo.videoType === "Paid"}
           <ShareSaveWrapper>
-            <Button onClick={() => setShareModalOpen(true)}>
-              <ReplyOutlinedIcon /> Share
-            </Button>
-            <Button onClick={() => downloadFileURL(currentVideo.videoUrl)}>
-              <AddTaskOutlinedIcon /> Download
-            </Button>
+            {isBought ? (
+              <PaidButton>Free</PaidButton>
+            ) : (
+              <BuyButton onClick={() => goToCheckout()}>Buy</BuyButton>
+            )}
+            {isBought ? (
+              <>
+                <Button onClick={() => setShareModalOpen(true)}>
+                  <ReplyOutlinedIcon /> Share
+                </Button>
+
+                <Button onClick={() => downloadFileURL(currentVideo.videoUrl)}>
+                  <AddTaskOutlinedIcon /> Download
+                </Button>
+              </>
+            ) : (
+              ""
+            )}
           </ShareSaveWrapper>
         </TitleWrapper>
         <Details>
@@ -262,43 +317,59 @@ const Video = () => {
               currentVideo.createdAt &&
               ` • ${format(currentVideo.createdAt)}`}
           </Info>
-          <Buttons>
-            <EmojiButton onClick={() => handleEmojiClick("👍")}>
-              <Emoji
-                style={{ fontSize: selectedEmoji === "👍" ? "35px" : "24px" }}
-              >
-                👍
-              </Emoji>
-            </EmojiButton>
-            <EmojiButton onClick={() => handleEmojiClick("😆")}>
-              <Emoji
-                style={{ fontSize: selectedEmoji === "😆" ? "35px" : "24px" }}
-              >
-                😆
-              </Emoji>
-            </EmojiButton>
-            <EmojiButton onClick={() => handleEmojiClick("❤️")}>
-              <Emoji
-                style={{ fontSize: selectedEmoji === "❤️" ? "35px" : "24px" }}
-              >
-                ❤️
-              </Emoji>
-            </EmojiButton>
-            <EmojiButton onClick={() => handleEmojiClick("😢")}>
-              <Emoji
-                style={{ fontSize: selectedEmoji === "😢" ? "35px" : "24px" }}
-              >
-                😢
-              </Emoji>
-            </EmojiButton>
-            <EmojiButton onClick={() => handleEmojiClick("😡")}>
-              <Emoji
-                style={{ fontSize: selectedEmoji === "😡" ? "35px" : "24px" }}
-              >
-                😡
-              </Emoji>
-            </EmojiButton>
-          </Buttons>
+          {isBought ? (
+            <>
+              <Buttons>
+                <EmojiButton onClick={() => handleEmojiClick("👍")}>
+                  <Emoji
+                    style={{
+                      fontSize: selectedEmoji === "👍" ? "35px" : "24px",
+                    }}
+                  >
+                    👍
+                  </Emoji>
+                </EmojiButton>
+                <EmojiButton onClick={() => handleEmojiClick("😆")}>
+                  <Emoji
+                    style={{
+                      fontSize: selectedEmoji === "😆" ? "35px" : "24px",
+                    }}
+                  >
+                    😆
+                  </Emoji>
+                </EmojiButton>
+                <EmojiButton onClick={() => handleEmojiClick("❤️")}>
+                  <Emoji
+                    style={{
+                      fontSize: selectedEmoji === "❤️" ? "35px" : "24px",
+                    }}
+                  >
+                    ❤️
+                  </Emoji>
+                </EmojiButton>
+                <EmojiButton onClick={() => handleEmojiClick("😢")}>
+                  <Emoji
+                    style={{
+                      fontSize: selectedEmoji === "😢" ? "35px" : "24px",
+                    }}
+                  >
+                    😢
+                  </Emoji>
+                </EmojiButton>
+                <EmojiButton onClick={() => handleEmojiClick("😡")}>
+                  <Emoji
+                    style={{
+                      fontSize: selectedEmoji === "😡" ? "35px" : "24px",
+                    }}
+                  >
+                    😡
+                  </Emoji>
+                </EmojiButton>
+              </Buttons>
+            </>
+          ) : (
+            ""
+          )}
         </Details>
 
         <ModalAnt
@@ -344,7 +415,7 @@ const Video = () => {
           ) : null}
         </Channel>
         <Hr />
-        {currentVideo && currentVideo._id ? (
+        {isBought && currentVideo && currentVideo._id ? (
           <Comments videoId={currentVideo._id} />
         ) : null}
       </Content>

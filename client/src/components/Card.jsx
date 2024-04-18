@@ -9,12 +9,10 @@ const Container = styled.div`
   cursor: pointer;
   display: ${(props) => props.type === "flex" && "flex"};
   gap: 1.5rem;
-  border: 5px solid ${({ theme }) => theme.soft};
   color: ${({ theme }) => "#202020"};
   transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #202020;
     transition: 200ms;
     transform: scale(1.05);
   }

@@ -111,3 +111,32 @@ export const dislike = async (req, res, next) => {
     next(err);
   }
 };
+
+export const checkBoughtVideos = async (req, res, next) => {
+  const id = req.user.id;
+  const videoId = req.params.videoId;
+  try {
+    const user = await User.findById(id);
+    if (user.purchasedVideos.includes(videoId)) {
+      // User has bought the video
+      return res.status(200).json({ bought: true });
+    } else {
+      // User has not bought the video
+      return res.status(200).json({ bought: false });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const buyVideo = async (req, res, next) => {
+  const id = req.user.id;
+  const videoId = req.params.videoId;
+  try {
+    await User.findByIdAndUpdate(req.user.id, {
+      $push: { boughtVideos: videoId },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
