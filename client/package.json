@@ -1,6 +1,6 @@
 {
   "homepage": "https://27tkc.github.io/Watcher",
-  "name": "Watcher",
+  "name": "watcher",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
