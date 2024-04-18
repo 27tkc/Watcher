@@ -2,11 +2,11 @@
   "version": 2,
   "builds": [{ "src": "./index.js", "use": "@vercel/node" }],
   "routes": [
-    { "src": "/api/auth/(.*)", "dest": "/api/auth/$1" },
-    { "src": "/api/users/(.*)", "dest": "/api/users/$1" },
-    { "src": "/api/videos/(.*)", "dest": "/api/videos/$1" },
-    { "src": "/api/comments/(.*)", "dest": "/api/comments/$1" },
-    { "src": "/api/payments/(.*)", "dest": "/api/payments/$1" },
+    { "src": "/api/auth/(.*)", "dest": "/routes/auth/$1" },
+    { "src": "/api/users/(.*)", "dest": "/routes/users/$1" },
+    { "src": "/api/videos/(.*)", "dest": "/routes/videos/$1" },
+    { "src": "/api/comments/(.*)", "dest": "/routes/comments/$1" },
+    { "src": "/api/payments/(.*)", "dest": "/routes/payments/$1" },
     { "src": "/(.*)", "dest": "/" }
   ]
 }
