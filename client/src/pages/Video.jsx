@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+// import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+// import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined";
 import Comments from "../components/Comments";
@@ -147,7 +147,7 @@ const PaidContentMessage = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 720px; /* Same height as the video player */
+  height: 500px; /* Same height as the video player */
   width: 100%;
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
@@ -195,8 +195,9 @@ const Video = () => {
     const checkBoughtStatus = async () => {
       if (currentVideo) {
         const boughtStatus = await axios.get(
-          `/users/checkBoughtVideo/${currentVideo._id}`
+          `/videos/checkPurchasedUsers/${currentVideo._id}/${currentUser._id}`
         );
+        console.log(boughtStatus);
         setIsBought(boughtStatus.data.bought);
         //To not increase views unless bought and then viewed
         if (isBought) {
@@ -210,12 +211,6 @@ const Video = () => {
 
     checkBoughtStatus();
   }, [currentVideo]);
-  const isBoughtCheck = async () => {
-    const boughtStatus = await axios.get(
-      `/users/checkBoughtVideo/${currentVideo._id}`
-    );
-    setIsBought(boughtStatus.data.bought);
-  };
 
   const handleEmojiClick = async (emoji) => {
     if (!currentUser) {
@@ -258,7 +253,7 @@ const Video = () => {
       setShowModal(true); // Show modal to prompt user to log in
       return;
     }
-    window.location.href = `/checkout?videoId=${currentVideo._id}`;
+    window.location.href = `/checkout?videoId=${currentVideo._id}&user=${currentUser._id}`;
   };
 
   const isSubscribed = currentUser?.subscribedUsers?.includes(channel?._id);

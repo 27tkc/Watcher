@@ -19,14 +19,17 @@ import Checkout from "./pages/Checkout";
 
 const Container = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const Main = styled.div`
   flex: 7;
   background-color: ${({ theme }) => theme.bg};
+  height: 100%;
 `;
 const Wrapper = styled.div`
-  padding: 22px 96px;
+  padding: 20px 20px 20px 40px;
+  height: 100%;
 `;
 
 function App() {

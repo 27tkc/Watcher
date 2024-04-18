@@ -156,6 +156,7 @@ const Upload = ({ setOpen, onClose }) => {
       videoType,
       price: newPrice,
     });
+    await axios.put(`/videos/buyVideo/${res.data._id}/${res.data.userId}`);
     setOpen(false);
     onClose(true); // Close the modal
     res.status === 200 && navigate(`/video/${res.data._id}`);

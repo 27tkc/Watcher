@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
 import VideoImg from "../img/video.png";
 import PremiumImg from "../img/premium.png";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/userSlice";
+import { fetchSuccess } from "../redux/videoSlice";
 
 const CheckoutWrapper = styled.div`
   display: flex;
@@ -59,20 +61,25 @@ const Button = styled.button`
 
 const Checkout = () => {
   const location = useLocation();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
+  const params = new URLSearchParams(location.search);
+  const userId = params.get("userId");
+  const videoId = params.get("videoId");
+  const videoUser = params.get("user");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
-      const params = new URLSearchParams(location.search);
-      const userId = params.get("userId");
-      const videoId = params.get("videoId");
-
       if (userId) {
         // Fetch premium membership data
         try {
           // const response = await axios.get("/api/premium");
-          setItems([{ name: "Premium Membership", price: 29.99 }]);
+          setItems({
+            name: "Premium Membership",
+            price: 29.99,
+            img: PremiumImg,
+          });
           setTotalPrice(29.99);
         } catch (error) {
           console.error("Error fetching premium membership data:", error);
@@ -82,7 +89,11 @@ const Checkout = () => {
         try {
           const response = await axios.get(`videos/find/${videoId}`);
           const video = response.data;
-          setItems([{ name: video.title, price: video.price / 100 }]);
+          setItems({
+            name: video.title,
+            price: video.price / 100,
+            img: VideoImg,
+          });
           setTotalPrice(video.price / 100);
         } catch (error) {
           console.error("Error fetching video data:", error);
@@ -93,32 +104,63 @@ const Checkout = () => {
     fetchData();
   }, [location.search]);
 
+  const initPayment = (data) => {
+    const options = {
+      key: process.env.KEY_SECRET,
+      amount: data.amount,
+      currency: data.currency,
+      name: items.name,
+      description: "Test Transaction",
+      image: items.img,
+      order_id: data.id,
+      handler: async (response) => {
+        try {
+          const verifyUrl = "/payments/verify";
+          const { data } = await axios.post(verifyUrl, response);
+          alert(data.message);
+          redirectAfterSuccessfulPayment();
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  };
+
+  const redirectAfterSuccessfulPayment = async () => {
+    try {
+      if (userId) {
+        let response = await axios.put(`/users/${userId}`, {
+          membershipType: "Premium",
+        });
+        if (response.statusText === "OK") {
+          console.log(response);
+          dispatch(loginSuccess(response.data));
+          window.location.href = `/`;
+        } else {
+          console.log(response);
+        }
+      }
+      if (videoId) {
+        let response = await axios.put(
+          `/videos/buyVideo/${videoId}/${videoUser}`
+        );
+        dispatch(fetchSuccess(response.data));
+        window.location.href = `video/${videoId}`;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const makePayment = async () => {
     try {
-      const stripe = await loadStripe(
-        "pk_test_51P5XTDRrhi8oNNxnVJl9h9jvuayT7lrpkCz3nAsItIkhBmcvljvGwFKiJjzeOwx4jLnlfDqwZI9SUOo18FIr5Uk700xBANi0pS"
-      );
-
-      const lineItems = items.map((item) => ({
-        currency: "cad", // Change the currency code as needed
-        name: item.name,
-        unit_amount: item.price * 100, // Convert price to cents
-        quantity: 1, // Assuming each item is purchased only once
-      }));
-
-      const response = await axios.post("/auth/create-checkout-session", {
-        lineItems,
-      });
-
-      const session = response.data;
-
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (result.error) {
-        console.error("Error redirecting to Checkout:", result.error.message);
-      }
+      const orderUrl = "/payments/orders";
+      const { data } = await axios.post(orderUrl, { amount: items.price });
+      initPayment(data.data);
     } catch (error) {
       console.error("Error creating Checkout Session:", error);
     }
@@ -136,12 +178,10 @@ const Checkout = () => {
             </tr>
           </thead>
           <tbody>
-            {items.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.price}</TableCell>
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell>{items.name}</TableCell>
+              <TableCell>{items.price}</TableCell>
+            </TableRow>
             <TableRow>
               <TableHeader>Total :</TableHeader>
               <TableHeader>{totalPrice}</TableHeader>

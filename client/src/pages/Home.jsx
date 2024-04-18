@@ -4,7 +4,7 @@ import Card from "../components/Card";
 import axios from "axios";
 const Container = styled.div`
   display: flex;
-  gap:2rem;
+  gap: 2rem;
   flex-wrap: wrap;
 `;
 

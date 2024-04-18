@@ -188,3 +188,34 @@ export const getSelectedEmoji = async (req, res, next) => {
     next(err);
   }
 };
+
+export const checkPurchasedUsers = async (req, res, next) => {
+  const videoId = req.params.videoId;
+  const userId = req.params.userId;
+  try {
+    const video = await Video.findById(videoId);
+    if (video.usersPurchased.includes(userId)) {
+      // User has bought the video
+      return res.status(200).json({ bought: true });
+    } else {
+      // User has not bought the video
+      return res.status(200).json({ bought: false });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const buyVideo = async (req, res, next) => {
+  const videoId = req.params.videoId;
+  const userId = req.params.userId;
+  try {
+    const video = await Video.findById(videoId);
+    await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { usersPurchased: userId },
+    });
+    return res.status(200).json({ video });
+  } catch (err) {
+    next(err);
+  }
+};

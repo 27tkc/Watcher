@@ -25,16 +25,12 @@ const UserSchema = new mongoose.Schema(
     subscribedUsers: {
       type: [String],
     },
-    purchasedVideos: {
-      type: [String],
-    },
     fromGoogle: {
       type: Boolean,
       default: false,
     },
     membershipType: {
       type: String,
-      enum: ["Free", "Premium"],
       default: "Free",
     },
     subscriptionStatus: {

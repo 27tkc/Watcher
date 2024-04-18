@@ -42,6 +42,18 @@ const Button = styled.button`
     background-color: ${({ theme }) => theme.bgLighter};
   }
 `;
+const PremimumButton = styled.button`
+  background-color: gold;
+  color: black;
+  padding: 10px 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.bgLighter};
+  }
+`;
 
 const UserInfo = styled.p`
   font-size: 20px;
@@ -135,7 +147,7 @@ const Settings = () => {
       {currentUser.membershipType !== "Premium" ? (
         <Button onClick={handleUpgradeToPremium}>Upgrade to Premium</Button>
       ) : (
-        "Premium"
+        <PremimumButton>Premium</PremimumButton>
       )}
       <br />
       <br />

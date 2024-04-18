@@ -8,8 +8,6 @@ import {
   like,
   dislike,
   getAllUsers,
-  checkBoughtVideos,
-  buyVideo,
 } from "../controllers/user.js";
 import { verifyToken } from "../verifyToken.js";
 
@@ -26,12 +24,6 @@ router.delete("/:id", verifyToken, deleteUser);
 
 //get a user
 router.get("/find/:id", getUser);
-
-//Check if a video is bought
-router.get("/checkBoughtVideo/:id", verifyToken, checkBoughtVideos);
-
-//Buy a video
-router.put("/buyVideo/:id", buyVideo);
 
 //subscribe a user
 router.put("/sub/:id", verifyToken, subscribe);

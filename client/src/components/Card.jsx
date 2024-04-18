@@ -5,10 +5,11 @@ import styled from "styled-components";
 import { format } from "timeago.js";
 
 const Container = styled.div`
-  width: ${(props) => props.type !== "sm" && "260px"};
+  width: ${(props) => props.type !== "sm" && "360px"};
   cursor: pointer;
   display: ${(props) => props.type === "flex" && "flex"};
   gap: 1.5rem;
+  padding: 10px;
   color: ${({ theme }) => "#202020"};
   transition: border-color 0.3s ease;
 
@@ -20,7 +21,7 @@ const Container = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: ${(props) => (props.type === "sm" ? "120px" : "202px")};
+  height: ${(props) => (props.type === "sm" ? "180px" : "202px")};
   background-color: #999;
   flex: 1;
 `;

@@ -23,13 +23,11 @@ import Modal from "./Modal";
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 100vh !important;
+  height: max-height !important;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
-  position: sticky;
   top: 0;
-  width: 18rem;
-  overflow-y: auto;
+  width: 12rem;
 `;
 
 const Wrapper = styled.div`
@@ -55,7 +53,7 @@ const Item = styled.div`
   gap: 20px;
   cursor: pointer;
   padding: 10px;
-  margin: 0rem .5rem;
+  margin: 0rem 0.5rem;
   border-radius: 0.5rem;
 
   &:hover {
