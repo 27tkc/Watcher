@@ -44,7 +44,7 @@ function App() {
     const fetchLatestVideos = async () => {
       try {
         // Fetch latest uploaded videos
-        const response = await axios.get("https://watcher-plum.vercel.app/videos/latestVideo");
+        const response = await axios.get("/videos/latestVideo");
         console.log(response);
         const latestVideos = await response.data;
         setCategories(latestVideos);
