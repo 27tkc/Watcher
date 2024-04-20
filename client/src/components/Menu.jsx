@@ -5,8 +5,6 @@ import WatcherDark from "../img/logo-black.png";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import VideoLibraryOutlinedIcon from "@mui/icons-material/VideoLibraryOutlined";
-import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
 import SportsEsportsOutlinedIcon from "@mui/icons-material/SportsEsportsOutlined";
 import SportsBasketballOutlinedIcon from "@mui/icons-material/SportsBasketballOutlined";
@@ -137,12 +135,6 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
             <Img src={logoSrc} />
           </Logo>
         </Link>
-        {/* <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-          <Item>
-            <HomeIcon />
-            Home
-          </Item>
-        </Link> */}
         <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <ExploreOutlinedIcon />
@@ -188,31 +180,6 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
             </Link>
           );
         })}
-
-        {/* <Item>
-          <LibraryMusicOutlinedIcon />
-          Music
-        </Item>
-        <Item>
-          <SportsBasketballOutlinedIcon />
-          Sports
-        </Item>
-        <Item>
-          <SportsEsportsOutlinedIcon />
-          Gaming
-        </Item>
-        <Item>
-          <MovieOutlinedIcon />
-          Movies
-        </Item>
-        <Item>
-          <ArticleOutlinedIcon />
-          News
-        </Item>
-        <Item>
-          <LiveTvOutlinedIcon />
-          Live
-        </Item> */}
         <Hr />
         {currentUser && (
           <>
