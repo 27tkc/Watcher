@@ -173,8 +173,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <Item>
-                {IconComponent && <IconComponent />}{" "}
-                {/* Instantiate and render the icon component */}
+                {IconComponent ? <IconComponent /> : ""}
                 {category}
               </Item>
             </Link>
