@@ -3,8 +3,6 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../error.js";
-import stripeModule from "stripe";
-const stripe = stripeModule(process.env.STRIPE_SECRET);
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {

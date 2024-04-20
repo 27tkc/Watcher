@@ -12,9 +12,41 @@ import cors from "cors";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Middleware
+app.use(
+    cors({
+        origin: 'https://watcher-front.vercel.app',
+        optionsSuccessStatus: 200,
+        allowedOrigins: ['https://watcher-front.vercel.app','https://firebasestorage.googleapis.com'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'Access-Control-Allow-Origin',
+            'Access-Control-Allow-Methods',
+            'Access-Control-Allow-Headers',
+        ],
+        credentials: true,
+    })
+)
 app.use(cookieParser());
 app.use(express.json());
+
+// Connect to MongoDB
+const connectToDB = async () => {
+  try {
+    await mongoose.connect(
+      process.env.MONGO,
+      { useNewUrlParser: true, useUnifiedTopology: true }
+    )
+    console.log('Connected to MongoDB')
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error.message)
+    process.exit(1) // Exit process with failure
+  }
+};
+connectToDB()
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -23,15 +55,15 @@ app.use("/api/videos", videoRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/payments", paymentRoutes);
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    // Start the server after successfully connecting to the database
-    app.listen(2700, () => {
-      console.log("Server is running on port 2700");
-    });
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-  });
+// Error handler
+app.use((err, req, res, next) => {
+  const status = err.status || 500
+  const message = err.message || 'Something went wrong!'
+  return res.status(status).json({ success: false, status, message })
+});
+
+// Start server
+const PORT = 5002;
+app.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}`)
+})
