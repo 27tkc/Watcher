@@ -149,7 +149,6 @@ const Navbar = () => {
                   onClick={() => setOpenUploadModal(true)}
                 />
               )}
-              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               <Avatar
                 src={currentUser.img}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
