@@ -75,7 +75,10 @@ const Comments = ({ videoId }) => {
           userId: currentUser._id,
           videoId,
         };
-        const res = await axios.post("https://backend-watcher-production.up.railway.app/api/comments/", newComment);
+        const res = await axios.post(
+          "https://watcher-server.up.railway.app/api/comments/",
+          newComment
+        );
         setComments([...comments, res.data]);
         setComment("");
       } catch (err) {
@@ -99,7 +102,9 @@ const Comments = ({ videoId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await axios.get(`https://backend-watcher-production.up.railway.app/api/comments/${videoId}`);
+        const res = await axios.get(
+          `https://watcher-server.up.railway.app/api/comments/${videoId}`
+        );
         setComments(res.data);
       } catch (err) {
         console.error("Error fetching comments:", err);

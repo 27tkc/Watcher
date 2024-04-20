@@ -102,7 +102,7 @@ const Settings = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://backend-watcher-production.up.railway.app/api/videos/getAllVideosUser/${currentUser._id}`
+          `https://watcher-server.up.railway.app/api/videos/getAllVideosUser/${currentUser._id}`
         );
         setVideos(response.data);
         setLoading(false);
@@ -127,7 +127,9 @@ const Settings = () => {
 
   const handleDelete = async (videoId) => {
     try {
-      await axios.delete(`https://backend-watcher-production.up.railway.app/api/deleteVideo/${videoId}`);
+      await axios.delete(
+        `https://watcher-server.up.railway.app/api/deleteVideo/${videoId}`
+      );
       setVideos(videos.filter((video) => video._id !== videoId));
     } catch (error) {
       console.error("Error deleting video:", error);

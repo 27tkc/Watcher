@@ -12,7 +12,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  ${'' /* height: calc(100vh - 56px); */}
+  ${"" /* height: calc(100vh - 56px); */}
   color: ${({ theme }) => theme.text};
 `;
 
@@ -33,13 +33,13 @@ const Label = styled.label`
 
 const Title = styled.h1`
   font-size: 24px;
-  text-align:center;
+  text-align: center;
 `;
 
 const SubTitle = styled.h2`
   font-size: 20px;
   font-weight: 300;
-  text-align:center;
+  text-align: center;
   margin-bottom: 1rem;
 `;
 
@@ -50,15 +50,15 @@ const Input = styled.input`
   background-color: transparent;
   width: 100%;
   margin: 10px;
-  margin-left:-10px;
+  margin-left: -10px;
   color: ${({ theme }) => theme.text};
   transition: border-color 0.3s ease; /* Add transition for smooth effect */
 
   &:focus {
-    border-color: ${({ theme }) => theme.primary}; /* Change border color on focus */
+    border-color: ${({ theme }) =>
+      theme.primary}; /* Change border color on focus */
   }
 `;
-
 
 const Button = styled.button`
   border-radius: 3px;
@@ -112,7 +112,10 @@ const SignIn = () => {
       // Determine if the input is an email or a username
       const isEmail = email.includes("@");
       const data = isEmail ? { email, password } : { name, password };
-      const res = await axios.post("https://backend-watcher-production.up.railway.app/api/auth/signin", data);
+      const res = await axios.post(
+        "https://watcher-server.up.railway.app/api/auth/signin",
+        data
+      );
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
@@ -156,15 +159,21 @@ const SignIn = () => {
     //   return;
     // }
     try {
-      const res = await axios.post("https://backend-watcher-production.up.railway.app/api/auth/signup", {
-        name: name,
-        email: email,
-        password: password,
-      });
+      const res = await axios.post(
+        "https://watcher-server.up.railway.app/api/auth/signup",
+        {
+          name: name,
+          email: email,
+          password: password,
+        }
+      );
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
-      setSignUpErrors({ ...signUpErrors, global: "Failed to sign up. Please try again." });
+      setSignUpErrors({
+        ...signUpErrors,
+        global: "Failed to sign up. Please try again.",
+      });
     }
   };
 
@@ -173,7 +182,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         axios
-          .post("https://backend-watcher-production.up.railway.app/api/auth/google", {
+          .post("https://watcher-server.up.railway.app/api/auth/google", {
             name: result.user.displayName,
             email: result.user.email,
             img: result.user.photoURL,

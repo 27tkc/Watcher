@@ -150,12 +150,15 @@ const Upload = ({ setOpen, onClose }) => {
   const handleUpload = async (e) => {
     e.preventDefault();
     const newPrice = videoType === "Paid" ? price : 0;
-    const res = await axios.post("https://backend-watcher-production.up.railway.app/api/videos", {
-      ...inputs,
-      tags,
-      videoType,
-      price: newPrice,
-    });
+    const res = await axios.post(
+      "https://watcher-server.up.railway.app/api/videos",
+      {
+        ...inputs,
+        tags,
+        videoType,
+        price: newPrice,
+      }
+    );
     await axios.put(`/videos/buyVideo/${res.data._id}/${res.data.userId}`);
     setOpen(false);
     onClose(true); // Close the modal

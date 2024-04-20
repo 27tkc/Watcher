@@ -15,7 +15,9 @@ const Recommendation = ({ tags }) => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get(`https://backend-watcher-production.up.railway.app/api/videos/tags?tags=${tags}`);
+      const res = await axios.get(
+        `https://watcher-server.up.railway.app/api/videos/tags?tags=${tags}`
+      );
       setVideos(res.data);
     };
     fetchVideos();

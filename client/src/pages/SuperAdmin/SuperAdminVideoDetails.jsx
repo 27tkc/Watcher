@@ -38,7 +38,9 @@ const SuperAdminVideoDetails = () => {
   useEffect(() => {
     const fetchVideo = async (videoId) => {
       try {
-        const response = await axios.get(`https://backend-watcher-production.up.railway.app/api/videos/find/${videoId}`);
+        const response = await axios.get(
+          `https://watcher-server.up.railway.app/api/videos/find/${videoId}`
+        );
         setVideo(response.data);
         setLoadingVideo(false);
         // Fetch user related to the video
@@ -51,7 +53,9 @@ const SuperAdminVideoDetails = () => {
 
     const fetchUser = async (userId) => {
       try {
-        const response = await axios.get(`https://backend-watcher-production.up.railway.app/api/users/find/${userId}`);
+        const response = await axios.get(
+          `https://watcher-server.up.railway.app/api/users/find/${userId}`
+        );
         setUser(response.data);
         setLoadingUser(false);
       } catch (error) {
