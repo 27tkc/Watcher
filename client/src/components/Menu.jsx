@@ -149,15 +149,6 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
             Explore
           </Item>
         </Link>
-        <Hr />
-        <Item>
-          <VideoLibraryOutlinedIcon />
-          Saved
-        </Item>
-        <Item>
-          <HistoryOutlinedIcon />
-          History
-        </Item>
         <Link
           to="subscriptions"
           style={{ textDecoration: "none", color: "inherit" }}
