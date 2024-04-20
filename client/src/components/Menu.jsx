@@ -151,10 +151,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           </Item>
         </Link>
         <Hr />
-        <Link
-          to={firstCatego}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
+        <Link to="music" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <LibraryMusicOutlinedIcon />
             {FirstCategoryIcon && <FirstCategoryIcon />}
