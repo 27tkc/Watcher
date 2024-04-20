@@ -63,10 +63,13 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/payments", paymentRoutes);
 
 // Error handler
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.message || "Something went wrong!";
-  return res.status(status).json({ success: false, status, message });
+app.use((req, res, next) => {
+  console.log("Incoming Request:", req.method, req.url);
+  res.on("finish", () => {
+    console.log("Outgoing Response:", res.statusCode);
+    console.log("Response Headers:", res.getHeaders());
+  });
+  next();
 });
 
 // Start server
