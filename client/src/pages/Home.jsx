@@ -14,7 +14,7 @@ const Home = ({ type }) => {
   useEffect(() => {
     const fetchVideos = async () => {
       const res = await axios.get(
-        `https://watcher-server.up.railway.app/api/videos/${type}`
+        `https://backend-watcher-production.up.railway.app/api/videos/${type}`
       );
       setVideos(res.data);
     };

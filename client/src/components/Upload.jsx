@@ -151,7 +151,7 @@ const Upload = ({ setOpen, onClose }) => {
     e.preventDefault();
     const newPrice = videoType === "Paid" ? price : 0;
     const res = await axios.post(
-      "https://watcher-server.up.railway.app/api/videos",
+      "https://backend-watcher-production.up.railway.app/api/videos",
       {
         ...inputs,
         tags,

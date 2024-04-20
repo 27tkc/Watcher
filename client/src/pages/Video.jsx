@@ -176,13 +176,13 @@ const Video = () => {
     const fetchData = async () => {
       try {
         const videoRes = await axios.get(
-          `https://watcher-server.up.railway.app/api/videos/find/${path}`
+          `https://backend-watcher-production.up.railway.app/api/videos/find/${path}`
         );
         const channelRes = await axios.get(
-          `https://watcher-server.up.railway.app/api/users/find/${videoRes.data.userId}`
+          `https://backend-watcher-production.up.railway.app/api/users/find/${videoRes.data.userId}`
         );
         const selectedEmojiRes = await axios.get(
-          `https://watcher-server.up.railway.app/api/videos/selectedEmoji/${videoRes.data._id}`
+          `https://backend-watcher-production.up.railway.app/api/videos/selectedEmoji/${videoRes.data._id}`
         );
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
@@ -197,14 +197,14 @@ const Video = () => {
     const checkBoughtStatus = async () => {
       if (currentVideo) {
         const boughtStatus = await axios.get(
-          `https://watcher-server.up.railway.app/api/videos/checkPurchasedUsers/${currentVideo._id}/${currentUser._id}`
+          `https://backend-watcher-production.up.railway.app/api/videos/checkPurchasedUsers/${currentVideo._id}/${currentUser._id}`
         );
         console.log(boughtStatus);
         setIsBought(boughtStatus.data.bought);
         //To not increase views unless bought and then viewed
         if (isBought) {
           await axios.put(
-            `https://watcher-server.up.railway.app/api/videos/view/${path}`
+            `https://backend-watcher-production.up.railway.app/api/videos/view/${path}`
           );
         }
         if (currentVideo.videoType === "Free") {
@@ -225,7 +225,7 @@ const Video = () => {
     const videoId = currentVideo._id;
     try {
       const response = await axios.put(
-        `https://watcher-server.up.railway.app/api/videos/selectEmoji/${videoId}`,
+        `https://backend-watcher-production.up.railway.app/api/videos/selectEmoji/${videoId}`,
         {
           emoji,
         }
@@ -251,10 +251,10 @@ const Video = () => {
 
     currentUser.subscribedUsers.includes(channel._id)
       ? await axios.put(
-          `https://watcher-server.up.railway.app/api/users/unsub/${channel._id}`
+          `https://backend-watcher-production.up.railway.app/api/users/unsub/${channel._id}`
         )
       : await axios.put(
-          `https://watcher-server.up.railway.app/api/users/sub/${channel._id}`
+          `https://backend-watcher-production.up.railway.app/api/users/sub/${channel._id}`
         );
     dispatch(subscription(channel._id));
   };

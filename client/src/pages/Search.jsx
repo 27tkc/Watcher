@@ -17,7 +17,7 @@ const Search = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       const res = await axios.get(
-        `https://watcher-server.up.railway.app/api/videos/search${query}`
+        `https://backend-watcher-production.up.railway.app/api/videos/search${query}`
       );
       setVideos(res.data);
     };

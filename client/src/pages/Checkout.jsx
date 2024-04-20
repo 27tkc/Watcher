@@ -88,7 +88,7 @@ const Checkout = () => {
         // Fetch video data
         try {
           const response = await axios.get(
-            `https://watcher-server.up.railway.app/api/videos/find/${videoId}`
+            `https://backend-watcher-production.up.railway.app/api/videos/find/${videoId}`
           );
           const video = response.data;
           setItems({
@@ -118,7 +118,7 @@ const Checkout = () => {
       handler: async (response) => {
         try {
           const verifyUrl =
-            "https://watcher-server.up.railway.app/api/payments/verify";
+            "https://backend-watcher-production.up.railway.app/api/payments/verify";
           const { data } = await axios.post(verifyUrl, response);
           alert(data.message);
           redirectAfterSuccessfulPayment();
@@ -138,7 +138,7 @@ const Checkout = () => {
     try {
       if (userId) {
         let response = await axios.put(
-          `https://watcher-server.up.railway.app/api/users/${userId}`,
+          `https://backend-watcher-production.up.railway.app/api/users/${userId}`,
           {
             membershipType: "Premium",
           }
@@ -153,7 +153,7 @@ const Checkout = () => {
       }
       if (videoId) {
         let response = await axios.put(
-          `https://watcher-server.up.railway.app/api/videos/buyVideo/${videoId}/${videoUser}`
+          `https://backend-watcher-production.up.railway.app/api/videos/buyVideo/${videoId}/${videoUser}`
         );
         dispatch(fetchSuccess(response.data));
         window.location.href = `video/${videoId}`;
@@ -165,7 +165,7 @@ const Checkout = () => {
   const makePayment = async () => {
     try {
       const orderUrl =
-        "https://watcher-server.up.railway.app/api/payments/orders";
+        "https://backend-watcher-production.up.railway.app/api/payments/orders";
       const { data } = await axios.post(orderUrl, { amount: items.price });
       initPayment(data.data);
     } catch (error) {

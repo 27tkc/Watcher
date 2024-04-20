@@ -76,7 +76,7 @@ const Comments = ({ videoId }) => {
           videoId,
         };
         const res = await axios.post(
-          "https://watcher-server.up.railway.app/api/comments/",
+          "https://backend-watcher-production.up.railway.app/api/comments/",
           newComment
         );
         setComments([...comments, res.data]);
@@ -103,7 +103,7 @@ const Comments = ({ videoId }) => {
     const fetchComments = async () => {
       try {
         const res = await axios.get(
-          `https://watcher-server.up.railway.app/api/comments/${videoId}`
+          `https://backend-watcher-production.up.railway.app/api/comments/${videoId}`
         );
         setComments(res.data);
       } catch (err) {

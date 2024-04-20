@@ -67,7 +67,7 @@ const Card = ({ type, video }) => {
   useEffect(() => {
     const fetchChannel = async () => {
       const res = await axios.get(
-        `https://watcher-server.up.railway.app/api/users/find/${video.userId}`
+        `https://backend-watcher-production.up.railway.app/api/users/find/${video.userId}`
       );
       setChannel(res.data);
     };

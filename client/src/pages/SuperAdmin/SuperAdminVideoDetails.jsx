@@ -39,7 +39,7 @@ const SuperAdminVideoDetails = () => {
     const fetchVideo = async (videoId) => {
       try {
         const response = await axios.get(
-          `https://watcher-server.up.railway.app/api/videos/find/${videoId}`
+          `https://backend-watcher-production.up.railway.app/api/videos/find/${videoId}`
         );
         setVideo(response.data);
         setLoadingVideo(false);
@@ -54,7 +54,7 @@ const SuperAdminVideoDetails = () => {
     const fetchUser = async (userId) => {
       try {
         const response = await axios.get(
-          `https://watcher-server.up.railway.app/api/users/find/${userId}`
+          `https://backend-watcher-production.up.railway.app/api/users/find/${userId}`
         );
         setUser(response.data);
         setLoadingUser(false);

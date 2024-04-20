@@ -30,7 +30,7 @@ class SuperAdminVideoTable extends Component {
   fetchVideos = async () => {
     try {
       const response = await axios.get(
-        "https://watcher-server.up.railway.app/api/videos/getAllVideos"
+        "https://backend-watcher-production.up.railway.app/api/videos/getAllVideos"
       );
       this.setState({ videos: response.data, filteredVideos: response.data });
     } catch (error) {
@@ -41,7 +41,7 @@ class SuperAdminVideoTable extends Component {
   handleDeleteVideo = async (videoId) => {
     try {
       await axios.delete(
-        `https://watcher-server.up.railway.app/api/videos/${videoId}`
+        `https://backend-watcher-production.up.railway.app/api/videos/${videoId}`
       );
       // After deletion, fetch videos again to update the table
       this.fetchVideos();

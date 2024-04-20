@@ -113,7 +113,7 @@ const SignIn = () => {
       const isEmail = email.includes("@");
       const data = isEmail ? { email, password } : { name, password };
       const res = await axios.post(
-        "https://watcher-server.up.railway.app/api/auth/signin",
+        "https://backend-watcher-production.up.railway.app/api/auth/signin",
         data
       );
       dispatch(loginSuccess(res.data));
@@ -160,7 +160,7 @@ const SignIn = () => {
     // }
     try {
       const res = await axios.post(
-        "https://watcher-server.up.railway.app/api/auth/signup",
+        "https://backend-watcher-production.up.railway.app/api/auth/signup",
         {
           name: name,
           email: email,
@@ -182,11 +182,14 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         axios
-          .post("https://watcher-server.up.railway.app/api/auth/google", {
-            name: result.user.displayName,
-            email: result.user.email,
-            img: result.user.photoURL,
-          })
+          .post(
+            "https://backend-watcher-production.up.railway.app/api/auth/google",
+            {
+              name: result.user.displayName,
+              email: result.user.email,
+              img: result.user.photoURL,
+            }
+          )
           .then((res) => {
             dispatch(loginSuccess(res.data));
             navigate("/");

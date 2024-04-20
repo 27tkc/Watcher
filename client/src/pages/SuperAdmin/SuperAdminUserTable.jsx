@@ -30,7 +30,7 @@ class SuperAdminUserTable extends Component {
   fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "https://watcher-server.up.railway.app/api/users/find/getAllUsers"
+        "https://backend-watcher-production.up.railway.app/api/users/find/getAllUsers"
       );
       this.setState({ users: response.data, filteredUsers: response.data });
     } catch (error) {
@@ -41,7 +41,7 @@ class SuperAdminUserTable extends Component {
   handleDeleteUser = async (userId) => {
     try {
       await axios.delete(
-        `https://watcher-server.up.railway.app/api/users/${userId}`
+        `https://backend-watcher-production.up.railway.app/api/users/${userId}`
       );
       // After deletion, fetch users again to update the table
       this.fetchUsers();
