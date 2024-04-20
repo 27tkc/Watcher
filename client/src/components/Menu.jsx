@@ -157,27 +157,26 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
         >
           <Item>
             {FirstCategoryIcon && <FirstCategoryIcon />}
-            {firstCatego}
+            Music
           </Item>
         </Link>
         {/* Render rest of the categories */}
         {Object.keys(categoryIcons).map((category, index) => {
-          if (category === firstCatego) {
-            return null;
+          if (category !== "Music") {
+            const IconComponent = categoryIcons[category]; // Get the icon component
+            return (
+              <Link
+                to={category}
+                key={index}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Item>
+                  {IconComponent ? <IconComponent /> : ""}
+                  {category}
+                </Item>
+              </Link>
+            );
           }
-          const IconComponent = categoryIcons[category]; // Get the icon component
-          return (
-            <Link
-              to={category}
-              key={index}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Item>
-                {IconComponent ? <IconComponent /> : ""}
-                {category}
-              </Item>
-            </Link>
-          );
         })}
         <Hr />
         {currentUser && (
