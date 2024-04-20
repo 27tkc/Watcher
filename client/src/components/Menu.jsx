@@ -156,6 +156,7 @@ const Menu = ({ darkMode, setDarkMode, categories }) => {
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Item>
+            <LibraryMusicOutlinedIcon />
             {FirstCategoryIcon && <FirstCategoryIcon />}
             Music
           </Item>
